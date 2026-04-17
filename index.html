@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scorpion Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #0f0f0f;
+      --border: #1e1e1e;
+      --accent: #e8ff47;
+      --accent-dim: rgba(232, 255, 71, 0.08);
+      --text: #f0f0f0;
+      --muted: #555;
+      --muted-2: #333;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.4;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 50;
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 2.5rem 4rem;
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+
+    .hero-tag::before {
+      content: '// ';
+      color: var(--muted);
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.35s;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+      position: relative;
+    }
+
+    .hero-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 560px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.5s;
+    }
+
+    .hero-sub strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.65s;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+      text-transform: uppercase;
+      cursor: crosshair;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #080808;
+      border-color: var(--accent);
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Divider line */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 0 auto;
+    }
+
+    /* Focus section */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 2.5rem;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .focus-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .focus-card {
+      background: var(--bg);
+      padding: 2rem;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .focus-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 2px;
+      height: 0;
+      background: var(--accent);
+      transition: height 0.3s ease;
+    }
+
+    .focus-card:hover::before { height: 100%; }
+    .focus-card:hover { background: var(--accent-dim); }
+
+    .card-num {
+      font-size: 0.65rem;
+      color: var(--muted-2);
+      letter-spacing: 0.15em;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .card-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* Manifesto strip */
+    .manifesto {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 2.5rem;
+      max-width: 100%;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .manifesto-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .manifesto p {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .manifesto p strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .manifesto p em {
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap;
+      gap: 1rem;
+    }
+
+    .footer-left {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    /* Scrolling ticker */
+    .ticker-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 0;
+      background: var(--bg);
+    }
+
+    .ticker {
+      display: flex;
+      gap: 3rem;
+      animation: ticker 25s linear infinite;
+      white-space: nowrap;
+      width: max-content;
+    }
+
+    .ticker span {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .ticker span.accent { color: var(--accent); }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Blinking cursor */
+    .cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1em;
+      background: var(--accent);
+      margin-left: 4px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 1.25rem 1.25rem; }
+      .hero, .section { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .nav-links { gap: 1rem; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">SCORPION<span>_</span>LABS</a>
+    <ul class="nav-links">
+      <li><a href="#focus">Research</a></li>
+      <li><a href="https://medium.com" target="_blank">Writing</a></li>
+      <li><a href="https://github.com/Shub-Upad" target="_blank">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <p class="hero-tag">AI Research Lab — Est. 2026</p>
+      <h1>Replication<br>with <em>Purpose</em><span class="cursor"></span></h1>
+      <p class="hero-sub">
+        Excavating foundational AI papers — back to 1956 — and rebuilding them with modern capabilities to find <strong>unexplored gaps</strong>. 
+        Specializing in <strong>Mechanistic Interpretability</strong> and <strong>ML Systems</strong>, documented in public.
+      </p>
+      <div class="hero-links">
+        <a href="https://medium.com" target="_blank" class="btn btn-primary">Read the Research →</a>
+        <a href="https://github.com/Shub-Upad" target="_blank" class="btn btn-secondary">View GitHub</a>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span class="accent">// MechInterp</span>
+        <span>Sparse Autoencoders</span>
+        <span class="accent">// MLOps</span>
+        <span>Drift Detection</span>
+        <span class="accent">// Constitutional AI</span>
+        <span>Activation Patching</span>
+        <span class="accent">// Production ML</span>
+        <span>Root Cause Analysis</span>
+        <span class="accent">// MechInterp</span>
+        <span>Sparse Autoencoders</span>
+        <span class="accent">// MLOps</span>
+        <span>Drift Detection</span>
+        <span class="accent">// Constitutional AI</span>
+        <span>Activation Patching</span>
+        <span class="accent">// Production ML</span>
+        <span>Root Cause Analysis</span>
+      </div>
+    </div>
+
+    <section class="section" id="focus">
+      <p class="section-label">Research Focus</p>
+      <div class="focus-grid">
+        <div class="focus-card">
+          <p class="card-num">01 —</p>
+          <h3 class="card-title">Mechanistic Interpretability</h3>
+          <p class="card-desc">Understanding what neural networks actually compute. Sparse autoencoders, attention pattern analysis, circuit-level reverse engineering of model behavior.</p>
+        </div>
+        <div class="focus-card">
+          <p class="card-num">02 —</p>
+          <h3 class="card-title">ML Systems & MLOps</h3>
+          <p class="card-desc">Production-grade ML infrastructure. Drift detection, observability, rollback systems, and root cause diagnostics that explain not just that a model failed — but why.</p>
+        </div>
+        <div class="focus-card">
+          <p class="card-num">03 —</p>
+          <h3 class="card-title">Paper Replication</h3>
+          <p class="card-desc">Rebuilding foundational AI research from scratch with modern tooling. Every replication is a stress-test for the original claims and a search for what comes next.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="manifesto">
+      <div class="manifesto-inner">
+        <p>
+          The lab runs on a simple principle: <strong>ship experiments, not slide decks.</strong>
+          Every idea gets built. Every build gets documented. Every failure is
+          <em>more interesting</em> than the success it precedes.
+        </p>
+      </div>
+    </div>
+
+    <footer>
+      <p class="footer-left">© 2026 Scorpion Labs · scorpionlabs.me</p>
+      <div class="footer-links">
+        <a href="https://medium.com" target="_blank">Medium</a>
+        <a href="https://github.com/Shub-Upad" target="_blank">GitHub</a>
+        <a href="https://www.youtube.com" target="_blank">YouTube</a>
+      </div>
+    </footer>
+  </main>
+
+</body>
+</html>
