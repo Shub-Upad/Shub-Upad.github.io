@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Paper Replication | Scorpion Labs</title>
+  <meta name="description" content="Paper replication hub for Scorpion Labs: foundational papers and reproducible rebuild references." />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">SCORPION<span>_</span>LABS</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle menu">Menu</button>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="mechint.html">MechInt</a></li>
+          <li><a href="mlsys.html">MLSys</a></li>
+          <li><a href="replication.html" class="active">Replication</a></li>
+          <li><a href="historical.html">Historical</a></li>
+          <li><a href="experiments.html">Experiments</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="main">
+      <header class="page-intro container">
+        <p class="section-label">Paper Replication</p>
+        <h1 class="section-title">Paper Replication Hub</h1>
+        <p class="section-subtitle">Reimplementation notes, references, and engineering checklists for rebuilding foundational and modern AI research.</p>
+        <p class="section-subtitle">Each resource is selected for reproducibility value: clear claims, testable setup, and insight into where results degrade in practice.</p>
+      </header>
+
+      <section class="section container" id="resources">
+        <p class="section-label">Resources</p>
+        <ul class="resource-list">
+          <li class="resource-item">
+            <p class="resource-meta">Paper</p>
+            <h3><a href="https://www.cs.toronto.edu/~hinton/absps/naturebp.pdf" target="_blank" rel="noopener noreferrer">Learning Representations by Back-Propagating Errors (1986)</a></h3>
+            <p class="resource-desc">Foundational reference for gradient-based learning; a core anchor when reproducing modern optimization behavior from first principles.</p>
+          </li>
+          <li class="resource-item">
+            <p class="resource-meta">Paper</p>
+            <h3><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener noreferrer">Attention Is All You Need</a></h3>
+            <p class="resource-desc">Baseline transformer replication target with clear architecture and measurable points of divergence under modern tooling choices.</p>
+          </li>
+          <li class="resource-item">
+            <p class="resource-meta">Paper</p>
+            <h3><a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener noreferrer">Language Models are Few-Shot Learners</a></h3>
+            <p class="resource-desc">Useful for evaluating scaling-era claims and benchmark sensitivity when training setup, data curation, or prompt protocols shift.</p>
+          </li>
+          <li class="resource-item">
+            <p class="resource-meta">Repository</p>
+            <h3><a href="https://github.com/karpathy/minGPT" target="_blank" rel="noopener noreferrer">minGPT</a></h3>
+            <p class="resource-desc">Compact transformer codebase ideal for controlled replications and targeted ablations without hidden framework complexity.</p>
+          </li>
+          <li class="resource-item">
+            <p class="resource-meta">Guide</p>
+            <h3><a href="https://paperswithcode.com/" target="_blank" rel="noopener noreferrer">Papers With Code</a></h3>
+            <p class="resource-desc">Reference map for implementation baselines, benchmark status, and available repos before selecting replication targets.</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="section container" id="writing">
+        <p class="section-label">Writing</p>
+        <div class="empty-state">
+          <p>Coming soon — check back after May 2026</p>
+        </div>
+
+        <article class="writing-card" hidden aria-hidden="true">
+          <p class="writing-topline">Template | Apr 2026</p>
+          <h3 class="card-title">Replication Log Template</h3>
+          <p class="writing-excerpt">Use this structure for both external writeups and full on-page replication logs with plots, code, and error analysis.</p>
+          <article class="article-post">
+            <h4>Goal and Claim</h4>
+            <p>State the exact claim being replicated and define success metrics before running experiments.</p>
+            <figure>
+              <img src="https://images.unsplash.com/photo-1555255707-c07966088b7b?auto=format&fit=crop&w=1200&q=80" alt="Replication dashboard placeholder" />
+              <figcaption>Sample chart placeholder with caption support.</figcaption>
+            </figure>
+            <pre><code>python train.py --dataset wikitext --layers 12 --heads 12 --seed 17</code></pre>
+          </article>
+        </article>
+      </section>
+
+      <section class="section container" id="videos">
+        <p class="section-label">Videos</p>
+        <div class="videos-panel">
+          <div class="empty-state">
+            <p>Coming soon — check back after May 2026</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <p class="footer-left">© 2026 Scorpion Labs | scorpionlabs.me</p>
+        <div class="footer-links">
+          <a href="https://github.com/Shub-Upad" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://medium.com" target="_blank" rel="noopener noreferrer">Medium</a>
+          <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a>
+          <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

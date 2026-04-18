@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Personal Experimentations | Scorpion Labs</title>
+  <meta name="description" content="Personal experimentations hub for Scorpion Labs: experiment logs, tools, and execution resources." />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">SCORPION<span>_</span>LABS</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle menu">Menu</button>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="mechint.html">MechInt</a></li>
+          <li><a href="mlsys.html">MLSys</a></li>
+          <li><a href="replication.html">Replication</a></li>
+          <li><a href="historical.html">Historical</a></li>
+          <li><a href="experiments.html" class="active">Experiments</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="main">
+      <header class="page-intro container">
+        <p class="section-label">Personal Experimentations</p>
+        <h1 class="section-title">Personal Experimentations Hub</h1>
+        <p class="section-subtitle">Lab notebook for exploratory prototypes, failed attempts, and rapid experiment loops that do not fit formal replication tracks.</p>
+        <p class="section-subtitle">The focus here is honest iteration: what was tried, what broke, and what changed after each experimental cycle.</p>
+      </header>
+
+      <section class="section container" id="resources">
+        <p class="section-label">Resources</p>
+        <ul class="resource-list">
+          <li class="resource-item">
+            <p class="resource-meta">Repository</p>
+            <h3><a href="https://github.com/Shub-Upad" target="_blank" rel="noopener noreferrer">Shub Upad GitHub Projects</a></h3>
+            <p class="resource-desc">Primary source for current prototypes, code experiments, and scratch implementations that back each writeup.</p>
+          </li>
+          <li class="resource-item">
+            <p class="resource-meta">Toolkit</p>
+            <h3><a href="https://pytorch.org/" target="_blank" rel="noopener noreferrer">PyTorch</a></h3>
+            <p class="resource-desc">Experiment-first deep learning framework used for quick iteration on architecture probes and ablation studies.</p>
+          </li>
+          <li class="resource-item">
+            <p class="resource-meta">Toolkit</p>
+            <h3><a href="https://jupyter.org/" target="_blank" rel="noopener noreferrer">Jupyter</a></h3>
+            <p class="resource-desc">Notebook environment for live diagnostics, visualizations, and reproducible scratch investigations.</p>
+          </li>
+          <li class="resource-item">
+            <p class="resource-meta">Reference</p>
+            <h3><a href="https://wandb.ai/site" target="_blank" rel="noopener noreferrer">Weights and Biases</a></h3>
+            <p class="resource-desc">Experiment tracking reference for metric histories, run comparisons, and debugging inconsistent training outcomes.</p>
+          </li>
+          <li class="resource-item">
+            <p class="resource-meta">Reference</p>
+            <h3><a href="https://lightning.ai/docs/pytorch/stable/" target="_blank" rel="noopener noreferrer">PyTorch Lightning Docs</a></h3>
+            <p class="resource-desc">A practical source for structuring repeatable experiments once exploratory code paths start stabilizing.</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="section container" id="writing">
+        <p class="section-label">Writing</p>
+        <div class="empty-state">
+          <p>Coming soon — check back after May 2026</p>
+        </div>
+
+        <article class="writing-card" hidden aria-hidden="true">
+          <p class="writing-topline">Template | Apr 2026</p>
+          <h3 class="card-title">Experiment Journal Template</h3>
+          <p class="writing-excerpt">A direct copy-paste structure for publishing raw experiment notes as either an external article or full on-page entry.</p>
+          <article class="article-post">
+            <h4>Hypothesis</h4>
+            <p>Write one sentence on expected behavior before running the experiment.</p>
+            <h4>Results</h4>
+            <p>Summarize what happened, then list modifications for the next run.</p>
+            <pre><code>run_042:
+  model: tiny-transformer
+  lr: 3e-4
+  result: unstable after step 1500</code></pre>
+          </article>
+        </article>
+      </section>
+
+      <section class="section container" id="videos">
+        <p class="section-label">Videos</p>
+        <div class="videos-panel">
+          <div class="empty-state">
+            <p>Coming soon — check back after May 2026</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <p class="footer-left">© 2026 Scorpion Labs | scorpionlabs.me</p>
+        <div class="footer-links">
+          <a href="https://github.com/Shub-Upad" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://medium.com" target="_blank" rel="noopener noreferrer">Medium</a>
+          <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a>
+          <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
