@@ -98,8 +98,8 @@ a {
 }
 
 .nav-logo {
-  font-family: "Syne", sans-serif;
-  font-weight: 800;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
   font-size: clamp(0.95rem, 2vw, 1rem);
   letter-spacing: 0.08em;
   text-decoration: none;
@@ -177,8 +177,8 @@ a {
 h1,
 .h1 {
   margin: 0;
-  font-family: "Syne", sans-serif;
-  font-weight: 800;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 0.98;
   font-size: clamp(2.25rem, 7.5vw, 6rem);
@@ -312,7 +312,7 @@ h1,
 
 .section-title {
   margin: 0 0 0.65rem;
-  font-family: "Syne", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
   font-size: clamp(1.4rem, 3.6vw, 2rem);
@@ -407,7 +407,7 @@ h1,
 
 .card-title {
   margin: 0 0 0.55rem;
-  font-family: "Syne", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   letter-spacing: -0.01em;
   font-size: clamp(1rem, 1.7vw, 1.2rem);
 }
@@ -424,16 +424,17 @@ h1,
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: var(--surface);
-  padding: clamp(2rem, 5vw, 3.4rem) 0;
+  padding: clamp(2.2rem, 5vw, 3.6rem) 0;
 }
 
 .manifesto p {
   margin: 0;
   color: var(--muted);
-  font-family: "Syne", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: clamp(1.06rem, 1.2rem + 0.75vw, 1.58rem);
-  line-height: 1.7;
+  line-height: 1.85;
   letter-spacing: 0.005em;
+  padding-block: 0.08em;
   overflow-wrap: anywhere;
   word-break: normal;
 }
@@ -460,7 +461,7 @@ h1,
 .resource-item h3 {
   margin: 0 0 0.45rem;
   font-size: clamp(1rem, 1.5vw, 1.12rem);
-  font-family: "Syne", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 .resource-item h3 a {
@@ -529,7 +530,7 @@ h1,
 .article-post h4,
 .article-post h5 {
   margin: 1rem 0 0.5rem;
-  font-family: "Syne", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: clamp(0.95rem, 1.4vw, 1.08rem);
 }
 
@@ -675,7 +676,7 @@ h1,
 }
 
 .single-column h2 {
-  font-family: "Syne", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: clamp(1.35rem, 2vw, 1.8rem);
   margin: 0 0 0.7rem;
 }
