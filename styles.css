@@ -174,12 +174,12 @@ a {
 
 .nav-dropdown-menu {
   position: absolute;
-  top: calc(100% + 0.65rem);
+  top: 100%;
   left: 0;
   display: none;
   flex-direction: column;
   min-width: 12rem;
-  padding: 0.45rem;
+  padding: 0.55rem 0.45rem 0.45rem;
   margin: 0;
   list-style: none;
   background: rgba(8, 8, 8, 0.98);
@@ -387,6 +387,14 @@ h1,
 
 .page-intro {
   padding: 8.4rem 0 2.3rem;
+}
+
+.about-page .page-intro {
+  padding-bottom: 1.4rem;
+}
+
+.about-page .section {
+  padding: 1.8rem 0 2.2rem;
 }
 
 .focus-grid,

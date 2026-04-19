@@ -20,6 +20,10 @@
 
   dropdownTriggers.forEach((trigger) => {
     trigger.addEventListener("click", () => {
+      if (window.innerWidth > 980) {
+        return;
+      }
+
       const parent = trigger.closest(".nav-dropdown");
       if (!parent) {
         return;
