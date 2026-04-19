@@ -738,7 +738,11 @@ h1,
 .single-column h2 {
   font-family: "Space Grotesk", sans-serif;
   font-size: clamp(1.35rem, 2vw, 1.8rem);
-  margin: 0 0 0.7rem;
+  margin: 2rem 0 0.85rem;
+}
+
+.single-column h2:first-of-type {
+  margin-top: 0;
 }
 
 .single-column p,
@@ -746,6 +750,10 @@ h1,
   color: var(--muted);
   line-height: 1.82;
   font-size: clamp(0.85rem, 0.9vw, 0.95rem);
+}
+
+.single-column p {
+  margin: 0 0 1.25rem;
 }
 
 .single-column ul {
@@ -756,8 +764,8 @@ h1,
 .link-group {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.8rem;
-  margin: 1rem 0 2rem;
+  gap: 0.9rem;
+  margin: 1.15rem 0 2.4rem;
 }
 
 .link-group-single {
