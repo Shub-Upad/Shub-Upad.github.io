@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Mechanistic Interpretability | Scorpion Labs</title>
-  <meta name="description" content="Mechanistic Interpretability hub for Scorpion Labs: curated resources, writing scaffolds, and video notes." />
+  <meta name="description"
+    content="Mechanistic Interpretability hub for Scorpion Labs: curated resources, writing scaffolds, and video notes." />
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <div class="site-shell">
     <nav class="site-nav" aria-label="Primary navigation">
@@ -20,7 +25,8 @@
         <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
           <li class="nav-dropdown">
-            <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Research</button>
+            <button class="nav-dropdown-trigger" type="button" aria-haspopup="true"
+              aria-expanded="false">Research</button>
             <ul class="nav-dropdown-menu" aria-label="Research pages">
               <li><a href="mechint.html" class="active">MechInt</a></li>
               <li><a href="mlsys.html">MLSys</a></li>
@@ -37,8 +43,10 @@
       <header class="page-intro container">
         <p class="section-label">Mechanistic Interpretability</p>
         <h1 class="section-title">Mechanistic Interpretability Hub</h1>
-        <p class="section-subtitle">Curated pathways for understanding what models compute internally, from feature decomposition to circuit-level interventions.</p>
-        <p class="section-subtitle">This section tracks practical resources that convert interpretability theory into executable workflows and reproducible experiments.</p>
+        <p class="section-subtitle"> What does a model actually compute when it predicts the next token?
+          This hub maps the answer, through feature decomposition, activation
+          patching, and circuit-level interventions on real models. Theory only
+          counts when it runs.</p>
       </header>
 
       <section class="section container" id="resources">
@@ -46,28 +54,38 @@
         <ul class="resource-list">
           <li class="resource-item">
             <p class="resource-meta">Paper</p>
-            <h3><a href="https://transformer-circuits.pub/2021/framework/index.html" target="_blank" rel="noopener noreferrer">A Mathematical Framework for Transformer Circuits</a></h3>
-            <p class="resource-desc">Canonical foundation for circuit analysis in transformers, useful for framing attention heads and MLP pathways as compositional algorithms.</p>
+            <h3><a href="https://transformer-circuits.pub/2021/framework/index.html" target="_blank"
+                rel="noopener noreferrer">A Mathematical Framework for Transformer Circuits</a></h3>
+            <p class="resource-desc">Canonical foundation for circuit analysis in transformers, useful for framing
+              attention heads and MLP pathways as compositional algorithms.</p>
           </li>
           <li class="resource-item">
             <p class="resource-meta">Paper</p>
-            <h3><a href="https://arxiv.org/abs/2309.08600" target="_blank" rel="noopener noreferrer">Towards Monosemanticity: Decomposing Language Models With Dictionary Learning</a></h3>
-            <p class="resource-desc">Introduces sparse autoencoder methods for splitting superposed activations into cleaner features that are easier to inspect and validate.</p>
+            <h3><a href="https://arxiv.org/abs/2309.08600" target="_blank" rel="noopener noreferrer">Towards
+                Monosemanticity: Decomposing Language Models With Dictionary Learning</a></h3>
+            <p class="resource-desc">Introduces sparse autoencoder methods for splitting superposed activations into
+              cleaner features that are easier to inspect and validate.</p>
           </li>
           <li class="resource-item">
             <p class="resource-meta">Repository</p>
-            <h3><a href="https://github.com/neelnanda-io/TransformerLens" target="_blank" rel="noopener noreferrer">TransformerLens</a></h3>
-            <p class="resource-desc">A practical toolkit for activation patching, causal tracing, and direct model introspection with minimal setup overhead.</p>
+            <h3><a href="https://github.com/neelnanda-io/TransformerLens" target="_blank"
+                rel="noopener noreferrer">TransformerLens</a></h3>
+            <p class="resource-desc">A practical toolkit for activation patching, causal tracing, and direct model
+              introspection with minimal setup overhead.</p>
           </li>
           <li class="resource-item">
             <p class="resource-meta">Guide</p>
-            <h3><a href="https://www.lesswrong.com/s/yivyHaCAmMJ3CqSyj" target="_blank" rel="noopener noreferrer">A Practical Roadmap to MechInterp</a></h3>
-            <p class="resource-desc">A study sequence that connects key interpretability papers to executable habits, useful for structuring month-by-month research practice.</p>
+            <h3><a href="https://www.lesswrong.com/s/yivyHaCAmMJ3CqSyj" target="_blank" rel="noopener noreferrer">A
+                Practical Roadmap to MechInterp</a></h3>
+            <p class="resource-desc">A study sequence that connects key interpretability papers to executable habits,
+              useful for structuring month-by-month research practice.</p>
           </li>
           <li class="resource-item">
             <p class="resource-meta">Repository</p>
-            <h3><a href="https://github.com/Azazel5/MechInt-Documentation" target="_blank" rel="noopener noreferrer">MechInt Documentation</a></h3>
-            <p class="resource-desc">Curated implementation-first notes and project organization patterns that inspired this hub's resource curation format.</p>
+            <h3><a href="https://github.com/Azazel5/MechInt-Documentation" target="_blank"
+                rel="noopener noreferrer">MechInt Documentation</a></h3>
+            <p class="resource-desc">Curated implementation-first notes and project organization patterns that inspired
+              this hub's resource curation format.</p>
           </li>
         </ul>
       </section>
@@ -81,13 +99,16 @@
         <article class="writing-card" hidden aria-hidden="true">
           <p class="writing-topline">Template | Apr 2026</p>
           <h3 class="card-title">Post Title Placeholder</h3>
-          <p class="writing-excerpt">Two-line excerpt placeholder. Use this card for external links or for full on-page posts below.</p>
+          <p class="writing-excerpt">Two-line excerpt placeholder. Use this card for external links or for full on-page
+            posts below.</p>
           <a class="external-link" href="https://medium.com" target="_blank" rel="noopener noreferrer">Read External</a>
           <article class="article-post">
             <h4>Section Heading</h4>
-            <p>Paste full post content directly here. Keep paragraphs and headings as regular HTML so migration from Medium is straightforward.</p>
+            <p>Paste full post content directly here. Keep paragraphs and headings as regular HTML so migration from
+              Medium is straightforward.</p>
             <figure>
-              <img src="https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?auto=format&fit=crop&w=1200&q=80" alt="Placeholder for post figure" />
+              <img src="https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?auto=format&fit=crop&w=1200&q=80"
+                alt="Placeholder for post figure" />
               <figcaption>Optional caption for the image.</figcaption>
             </figure>
             <pre><code>def inspect_circuit(model, prompt):
@@ -116,4 +137,5 @@
 
   <script src="main.js"></script>
 </body>
+
 </html>

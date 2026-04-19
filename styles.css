@@ -347,7 +347,7 @@ h1,
 }
 
 .section {
-  padding: 4.8rem 0;
+  padding: 2.8rem 0;
 }
 
 .section-label {
@@ -377,7 +377,7 @@ h1,
 }
 
 .section-subtitle {
-  margin: 0;
+  margin: 3rem 0 0;
   max-width: 65ch;
   color: var(--muted);
   line-height: 1.75;
