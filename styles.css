@@ -751,6 +751,94 @@ h1,
   padding-left: 1.15rem;
 }
 
+.link-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0 2rem;
+}
+
+.link-group-single {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 22rem;
+}
+
+.link-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.link-card:hover,
+.link-card:focus-visible {
+  background: var(--accent-dim);
+  border-color: rgba(232, 255, 71, 0.35);
+  transform: translateY(-1px);
+}
+
+.link-badge {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: #080808;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.link-badge-school {
+  background: #d2d2d2;
+}
+
+.link-badge-personal {
+  background: var(--accent);
+}
+
+.link-badge-medium {
+  background: #f2f2f2;
+}
+
+.link-badge-youtube {
+  background: #ff7a7a;
+}
+
+.link-badge-tds {
+  background: #8ad7ff;
+}
+
+.link-badge-linkedin {
+  background: #8cc8ff;
+}
+
+.link-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.link-title {
+  color: var(--text);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.link-subtitle {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
 .cursor {
   display: inline-block;
   width: 3px;
@@ -885,6 +973,10 @@ h1,
 
   .manifesto p {
     line-height: 1.78;
+  }
+
+  .link-group {
+    grid-template-columns: 1fr;
   }
 }
 
