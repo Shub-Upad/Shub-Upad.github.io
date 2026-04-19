@@ -698,7 +698,7 @@ h1,
 .footer-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
 }
@@ -708,6 +708,8 @@ h1,
   color: var(--muted);
   letter-spacing: 0.05em;
   font-size: 0.72rem;
+  text-align: center;
+  width: 100%;
 }
 
 .footer-links {
