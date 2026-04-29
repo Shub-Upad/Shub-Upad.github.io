@@ -1,6 +1,7 @@
 (() => {
   const qs = new URLSearchParams(window.location.search);
   const id = qs.get("id");
+  const view = qs.get("view"); // "pdf" | "md" | null
   const INDEX_PATH = "topics/index.json";
 
   const titleEl = document.getElementById("post-title");
@@ -37,7 +38,26 @@
     return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
   };
 
-  const renderMetaAndActions = (post) => {
+  const extractMarkdownTitle = (md) => {
+    if (!md) return null;
+    const lines = String(md).split(/\r?\n/);
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (!line) continue;
+      const m = line.match(/^#\s+(.+?)\s*$/);
+      if (m) return m[1].trim();
+      if (!line.startsWith("<!--")) break;
+    }
+    return null;
+  };
+
+  const setPageTitle = (t) => {
+    const title = t || "Post";
+    if (titleEl) titleEl.textContent = title;
+    document.title = `${title} | Scorpion Labs`;
+  };
+
+  const renderMetaAndActions = (post, available) => {
     const dateText = formatDate(post.date);
     const tags = Array.isArray(post.tags) ? post.tags : [];
 
@@ -75,6 +95,22 @@
         ml_sys: "mlsys",
         historical_ai: "historical"
       };
+
+      if (available?.md) {
+        const read = document.createElement("a");
+        read.className = "btn btn-primary";
+        read.href = `post.html?id=${encodeURIComponent(post.id)}`;
+        read.textContent = "Read";
+        actionsEl.appendChild(read);
+      }
+
+      if (available?.pdf) {
+        const pdf = document.createElement("a");
+        pdf.className = "btn btn-secondary";
+        pdf.href = `post.html?id=${encodeURIComponent(post.id)}&view=pdf`;
+        pdf.textContent = "View PDF";
+        actionsEl.appendChild(pdf);
+      }
 
       if (post.pillar && hubMap[post.pillar]) {
         const hubLink = document.createElement("a");
@@ -147,6 +183,9 @@
     }
     const md = await resp.text();
 
+    const mdTitle = extractMarkdownTitle(md);
+    if (mdTitle) setPageTitle(mdTitle);
+
     if (!window.marked) {
       throw new Error("Markdown renderer (marked) failed to load.");
     }
@@ -184,28 +223,56 @@
     }
   };
 
-  const pickFileFromIndexOrProbe = async (basePath, entry) => {
-    const format = entry?.format;
-    const file = entry?.file;
-    if (format && file) return { format, file };
+  const urlExists = async (url) => {
+    try {
+      const head = await fetch(url, { method: "HEAD", cache: "no-store" });
+      if (head.ok) return true;
+    } catch {
+      // ignore
+    }
+    try {
+      const get = await fetch(url, { cache: "no-store" });
+      return get.ok;
+    } catch {
+      return false;
+    }
+  };
 
-    const candidates = [
-      { format: "md", file: "notes.md" },
-      { format: "pdf", file: "notes.pdf" },
+  const detectAvailable = async (basePath, entry) => {
+    const mdFile = entry?.file || "notes.md";
+    const pdfFile = entry?.pdf || "notes.pdf";
+
+    const mdUrl = `${basePath}${mdFile}`;
+    const pdfUrl = `${basePath}${pdfFile}`;
+
+    const md = await urlExists(mdUrl);
+    const pdf = await urlExists(pdfUrl);
+
+    return {
+      md: md ? mdFile : null,
+      pdf: pdf ? pdfFile : null
+    };
+  };
+
+  const pickFileFromIndexOrProbe = async (basePath, entry) => {
+    const available = await detectAvailable(basePath, entry);
+
+    if (view === "pdf" && available.pdf) return { format: "pdf", file: available.pdf, available };
+    if (view === "md" && available.md) return { format: "md", file: available.md, available };
+
+    if (available.md) return { format: "md", file: available.md, available };
+    if (available.pdf) return { format: "pdf", file: available.pdf, available };
+
+    // legacy fallbacks
+    const legacy = [
       { format: "md", file: "post.md" },
       { format: "pdf", file: "post.pdf" }
     ];
-
-    for (const cand of candidates) {
-      try {
-        const resp = await fetch(`${basePath}${cand.file}`, { cache: "no-store" });
-        if (resp.ok) return cand;
-      } catch {
-        // ignore
-      }
+    for (const cand of legacy) {
+      if (await urlExists(`${basePath}${cand.file}`)) return { ...cand, available: { md: null, pdf: null } };
     }
 
-    return null;
+    return { format: "none", file: "", available };
   };
 
   const run = async () => {
@@ -228,19 +295,31 @@
       file: indexEntry.file
     };
 
-    if (titleEl) titleEl.textContent = post.title || "Untitled post";
-    document.title = post.title ? `${post.title} | Scorpion Labs` : "Post | Scorpion Labs";
+    setPageTitle(post.title || "Untitled post");
 
-    renderMetaAndActions(post);
+    const picked = await pickFileFromIndexOrProbe(basePath, indexEntry);
+    renderMetaAndActions(post, picked.available);
 
     try {
-      const picked = await pickFileFromIndexOrProbe(basePath, indexEntry);
-      if (!picked) {
-        showError(`No readable file found in ${basePath}. Expected notes.md or notes.pdf (or specify file/format in topics/index.json).`);
+      if (picked.format === "none") {
+        showError("Coming soon — no notes published for this topic yet.");
         return;
       }
 
       if (picked.format === "pdf") {
+        // If markdown exists, use its title even when viewing the PDF.
+        if (picked.available?.md) {
+          try {
+            const mdResp = await fetch(`${basePath}${picked.available.md}`, { cache: "no-store" });
+            if (mdResp.ok) {
+              const md = await mdResp.text();
+              const mdTitle = extractMarkdownTitle(md);
+              if (mdTitle) setPageTitle(mdTitle);
+            }
+          } catch {
+            // ignore
+          }
+        }
         renderPdf(basePath, picked.file, post);
       } else {
         await renderMarkdown(basePath, picked.file, post);

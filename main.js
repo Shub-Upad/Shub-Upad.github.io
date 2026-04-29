@@ -56,12 +56,41 @@
   const INDEX_PATH = "topics/index.json";
   const INDEX_KEY = "topics";
 
+  const urlExists = async (url) => {
+    try {
+      const head = await fetch(url, { method: "HEAD", cache: "no-store" });
+      if (head.ok) return true;
+    } catch {
+      // ignore
+    }
+    try {
+      const get = await fetch(url, { cache: "no-store" });
+      return get.ok;
+    } catch {
+      return false;
+    }
+  };
+
   const formatDate = (iso) => {
     if (!iso) return "";
     const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
     const d = m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : new Date(iso);
     if (Number.isNaN(d.getTime())) return String(iso);
     return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
+  };
+
+  const extractMarkdownTitle = (md) => {
+    if (!md) return null;
+    const lines = String(md).split(/\r?\n/);
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (!line) continue;
+      const m = line.match(/^#\s+(.+?)\s*$/);
+      if (m) return m[1].trim();
+      // stop early once we hit real content that isn't a title
+      if (!line.startsWith("<!--")) break;
+    }
+    return null;
   };
 
   const renderPosts = (container, posts, hubSlug) => {
@@ -97,6 +126,20 @@
         h3.className = "card-title";
         h3.textContent = post.title || post.id || "Untitled";
 
+        // If markdown exists, prefer its first H1 as the canonical display title.
+        const mdFile = post.file || "notes.md";
+        const mdUrl = `topics/${String(post.id).replace(/^\/+/, "").replace(/\/+$/, "")}/${mdFile}`;
+        urlExists(mdUrl).then((exists) => {
+          if (!exists) return;
+          fetch(mdUrl, { cache: "no-store" })
+            .then((resp) => (resp.ok ? resp.text() : null))
+            .then((md) => {
+              const t = extractMarkdownTitle(md);
+              if (t) h3.textContent = t;
+            })
+            .catch(() => {});
+        });
+
         const tagsWrap = document.createElement("div");
         tagsWrap.className = "post-tags";
         (Array.isArray(post.tags) ? post.tags : []).forEach((tag) => {
@@ -108,14 +151,26 @@
 
         const actions = document.createElement("div");
         actions.className = "post-card-actions";
-        const link = document.createElement("a");
-        link.className = "external-link";
-        link.href = `post.html?id=${encodeURIComponent(post.id)}`;
-        link.textContent = post.format === "pdf" ? "View PDF →" : "Read →";
-        actions.appendChild(link);
+        const readLink = document.createElement("a");
+        readLink.className = "external-link";
+        readLink.href = `post.html?id=${encodeURIComponent(post.id)}`;
+        readLink.textContent = "Read →";
+        actions.appendChild(readLink);
+
+        if (post.pdf) {
+          const pdfLink = document.createElement("a");
+          pdfLink.className = "btn btn-secondary btn-small";
+          pdfLink.href = `post.html?id=${encodeURIComponent(post.id)}&view=pdf`;
+          pdfLink.textContent = "View PDF";
+
+          const pdfUrl = `topics/${String(post.id).replace(/^\/+/, "").replace(/\/+$/, "")}/${post.pdf}`;
+          urlExists(pdfUrl).then((exists) => {
+            if (exists) actions.appendChild(pdfLink);
+          });
+        }
 
         const navigate = () => {
-          window.location.href = link.href;
+          window.location.href = readLink.href;
         };
 
         card.addEventListener("click", (event) => {
