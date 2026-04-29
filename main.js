@@ -85,6 +85,8 @@
       .forEach((post) => {
         const card = document.createElement("article");
         card.className = "writing-card post-card";
+        card.tabIndex = 0;
+        card.setAttribute("role", "link");
 
         const topline = document.createElement("p");
         topline.className = "writing-topline";
@@ -111,6 +113,23 @@
         link.href = `post.html?id=${encodeURIComponent(post.id)}`;
         link.textContent = post.format === "pdf" ? "View PDF →" : "Read →";
         actions.appendChild(link);
+
+        const navigate = () => {
+          window.location.href = link.href;
+        };
+
+        card.addEventListener("click", (event) => {
+          const target = event.target;
+          if (target instanceof Element && target.closest("a")) return;
+          navigate();
+        });
+
+        card.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            navigate();
+          }
+        });
 
         card.appendChild(topline);
         card.appendChild(h3);

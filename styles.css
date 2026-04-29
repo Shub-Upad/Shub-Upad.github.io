@@ -398,10 +398,17 @@ h1,
 }
 
 .focus-grid,
-.card-grid,
-.writing-grid {
+.card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--border);
+  background: var(--border);
+}
+
+.writing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1px;
   border: 1px solid var(--border);
   background: var(--border);
@@ -432,6 +439,15 @@ h1,
 
 .focus-card {
   cursor: pointer;
+}
+
+.post-card {
+  cursor: pointer;
+}
+
+.post-card:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
 }
 
 .focus-card::before,
