@@ -36,6 +36,66 @@
     }
   };
 
+  const setIframeHtml = (html) => {
+    if (!iframe) return;
+
+    // If we previously loaded a blob URL, release it.
+    const prev = iframe.dataset?.blobUrl;
+    if (prev) {
+      try {
+        URL.revokeObjectURL(prev);
+      } catch {
+        // ignore
+      }
+      delete iframe.dataset.blobUrl;
+    }
+
+    // Use a Blob URL instead of srcdoc so <base href="..."> works reliably and
+    // in-page hash navigation (e.g. footnotes) doesn't blow away the document.
+    const blob = new Blob([html], { type: "text/html" });
+    const blobUrl = URL.createObjectURL(blob);
+    iframe.dataset.blobUrl = blobUrl;
+    iframe.src = blobUrl;
+  };
+
+  const attachDisableFootnoteClicks = () => {
+    if (!iframe) return;
+    let doc;
+    try {
+      doc = iframe.contentDocument;
+    } catch {
+      return;
+    }
+    if (!doc || doc.__scorpionFootnoteClicksDisabled) return;
+    doc.__scorpionFootnoteClicksDisabled = true;
+
+    doc.addEventListener(
+      "click",
+      (ev) => {
+        const target = ev.target;
+        const a = target instanceof Element ? target.closest("a") : null;
+        if (!a) return;
+
+        // In HTML mode, hover tooltips are enough; clicking footnotes can cause
+        // confusing navigation inside the iframe. Disable clicks but preserve hover.
+        const isFootnoteLink =
+          a.classList.contains("footnote-ref") ||
+          a.classList.contains("footnote-back") ||
+          a.getAttribute("role") === "doc-noteref" ||
+          a.getAttribute("role") === "doc-backlink";
+
+        if (!isFootnoteLink) return;
+
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (typeof ev.stopImmediatePropagation === "function") {
+          ev.stopImmediatePropagation();
+        }
+      },
+      true
+    );
+  };
+
   const renderHtmlWithRewrites = async (htmlUrl, baseHref) => {
     if (!iframe) return;
 
@@ -48,7 +108,10 @@
 
     // Ensure relative assets resolve against the post folder.
     // (This also helps with Quarto libs and any relative links.)
-    const baseTag = `<base href="${baseHref}">`;
+    // IMPORTANT: When we load HTML via a Blob URL, relative base hrefs would resolve against the
+    // blob: URL (useless). So we force an absolute URL anchored to the current site origin.
+    const absoluteBaseHref = new URL(baseHref, window.location.href).toString();
+    const baseTag = `<base href="${absoluteBaseHref}">`;
     if (/<base\s/i.test(html)) {
       html = html.replace(/<base\b[^>]*>/i, baseTag);
     } else {
@@ -62,12 +125,23 @@
       html = html.replace(/(["'])(?!https?:\/\/)([^"']+?)_files\//g, "$1post_files/");
     }
 
-    // Rewrite common Quarto image patterns when images are stored within the post directory.
-    // Example: ../../images/foo.png -> images/foo.png
-    html = html.replace(/(["'])(?:\.\.\/){2}images\//g, "$1images/");
+    // NOTE: We mirror ScorpionLabs Core's structure (repo-root `post_files/` + `images/`),
+    // so we intentionally do NOT rewrite `../../../../images/...` (it should resolve to `/images/...`),
+    // and we do NOT rewrite root-absolute `/post_files/...` references either.
 
-    iframe.removeAttribute("src");
-    iframe.srcdoc = html;
+    // Ensure anchor navigation is smooth.
+    const smoothStyle = `<style>html{scroll-behavior:smooth}</style>`;
+    if (/<\/head>/i.test(html)) {
+      html = html.replace(/<\/head>/i, `${smoothStyle}\n</head>`);
+    } else if (/<head(\s[^>]*)?>/i.test(html)) {
+      html = html.replace(/<head(\s[^>]*)?>/i, (m) => `${m}\n${smoothStyle}`);
+    }
+
+    setIframeHtml(html);
+
+    // Once the iframe document is available, disable footnote clicks (keep hover behavior).
+    iframe.addEventListener("load", attachDisableFootnoteClicks, { once: true });
+    queueMicrotask(() => attachDisableFootnoteClicks());
   };
 
   const setActive = (mode) => {
@@ -134,14 +208,9 @@
           fallback.hidden = false;
         }
       } else {
-        iframe.removeAttribute("src");
-        iframe.removeAttribute("srcdoc");
-        // Render HTML via srcdoc so we can fix relative paths without re-rendering Quarto outputs.
-        renderHtmlWithRewrites(htmlUrl, base)
-          .catch(() => {
-            // Fallback: navigate directly (may still work if assets are correct).
-            iframe.src = htmlUrl;
-          });
+        // Match Scorpion Labs behavior: load Quarto HTML directly.
+        // This avoids blob/base/hash edge cases and lets Quarto handle footnotes normally.
+        iframe.src = htmlUrl;
         iframe.title = "Post HTML";
       }
       setActive(mode === "pdf" ? "pdf" : "read");

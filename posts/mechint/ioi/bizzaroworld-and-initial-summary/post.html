@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>bizzaroworld-and-initial-summary</title>
+<title>post</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,17 +26,17 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="BizzaroWorld and Initial Summary_files/libs/clipboard/clipboard.min.js"></script>
-<script src="BizzaroWorld and Initial Summary_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="BizzaroWorld and Initial Summary_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="BizzaroWorld and Initial Summary_files/libs/quarto-html/popper.min.js"></script>
-<script src="BizzaroWorld and Initial Summary_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="BizzaroWorld and Initial Summary_files/libs/quarto-html/anchor.min.js"></script>
-<link href="BizzaroWorld and Initial Summary_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="BizzaroWorld and Initial Summary_files/libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="BizzaroWorld and Initial Summary_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="BizzaroWorld and Initial Summary_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="BizzaroWorld and Initial Summary_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="post_files/libs/clipboard/clipboard.min.js"></script>
+<script src="post_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="post_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="post_files/libs/quarto-html/popper.min.js"></script>
+<script src="post_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="post_files/libs/quarto-html/anchor.min.js"></script>
+<link href="post_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="post_files/libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="post_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="post_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="post_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -178,7 +178,6 @@ window.Quarto = {
 <ul>
 <li>During training: you need weights + gradients (same size as weights) + Adam optimizer state (2× weight size)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> + stored activations for backprop. A 16GB model becomes a ~64GB training job before you’ve touched the data.</li>
 </ul>
-<p>Testing a footnote here<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
 <p>This is why <strong>QLoRA</strong> is such a breakthrough. You quantize the frozen weights to 4-bit (halving the weight footprint), then train only low-rank adapter matrices (LoRA). Only the tiny adapter parameters need gradients and optimizer state. Result: you can fine-tune LLaMA 70B on a single A100 80GB. The math works.</p>
 <hr>
 </section>
@@ -252,7 +251,7 @@ Layer 17:       ■        ■        ■       ■        ■      ■</code></
 <p>This task was chosen because: 1. It has a clear, unambiguous correct answer 2. It involves genuine multi-step reasoning (track two names, identify which is the IO) 3. GPT-2 Small solves it reliably, making it tractable to study</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="../../images/resid-pre-activation-patching.png" class="img-fluid figure-img"></p>
+<p><img src="../../../../images/resid-pre-activation-patching.png" class="img-fluid figure-img"></p>
 <figcaption>resid_pre activation patching heatmap — layers × token positions, color = ioi_metric score</figcaption>
 </figure>
 </div>
@@ -334,8 +333,7 @@ Layer 17:       ■        ■        ■       ■        ■      ■</code></
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>you can use any optmizaer that you want!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>If you see this at the bottom of the preview, your syntax is working!<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>you can use any optimizer that you want! That is the crux of this finding; there are optimizers particularly focusing in saving VRAM memory, so we can shop around. Of course, these things have a tradeoff because Adam is as SOTA as you get, but there’s that.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main>
 <!-- /main column -->
