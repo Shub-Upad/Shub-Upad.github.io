@@ -53,8 +53,8 @@
 })();
 
 (() => {
-  const INDEX_PATH = "topics/index.json";
-  const INDEX_KEY = "topics";
+  const INDEX_PATH = "posts/index.json";
+  const INDEX_KEY = "posts";
 
   const urlExists = async (url) => {
     try {
@@ -79,20 +79,6 @@
     return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
   };
 
-  const extractMarkdownTitle = (md) => {
-    if (!md) return null;
-    const lines = String(md).split(/\r?\n/);
-    for (const raw of lines) {
-      const line = raw.trim();
-      if (!line) continue;
-      const m = line.match(/^#\s+(.+?)\s*$/);
-      if (m) return m[1].trim();
-      // stop early once we hit real content that isn't a title
-      if (!line.startsWith("<!--")) break;
-    }
-    return null;
-  };
-
   const renderPosts = (container, posts, hubSlug) => {
     if (!container) return;
     container.innerHTML = "";
@@ -100,7 +86,7 @@
     if (!posts.length) {
       const empty = document.createElement("div");
       empty.className = "empty-state";
-      empty.innerHTML = "<p>No posts yet. Add a folder under topics/ and register it in topics/index.json.</p>";
+      empty.innerHTML = "<p>No posts yet. Add a folder under posts/ and register it in posts/index.json.</p>";
       container.appendChild(empty);
       return;
     }
@@ -126,20 +112,6 @@
         h3.className = "card-title";
         h3.textContent = post.title || post.id || "Untitled";
 
-        // If markdown exists, prefer its first H1 as the canonical display title.
-        const mdFile = post.file || "notes.md";
-        const mdUrl = `topics/${String(post.id).replace(/^\/+/, "").replace(/\/+$/, "")}/${mdFile}`;
-        urlExists(mdUrl).then((exists) => {
-          if (!exists) return;
-          fetch(mdUrl, { cache: "no-store" })
-            .then((resp) => (resp.ok ? resp.text() : null))
-            .then((md) => {
-              const t = extractMarkdownTitle(md);
-              if (t) h3.textContent = t;
-            })
-            .catch(() => {});
-        });
-
         const tagsWrap = document.createElement("div");
         tagsWrap.className = "post-tags";
         (Array.isArray(post.tags) ? post.tags : []).forEach((tag) => {
@@ -151,26 +123,35 @@
 
         const actions = document.createElement("div");
         actions.className = "post-card-actions";
-        const readLink = document.createElement("a");
-        readLink.className = "external-link";
-        readLink.href = `post.html?id=${encodeURIComponent(post.id)}`;
-        readLink.textContent = "Read →";
-        actions.appendChild(readLink);
+        const viewerHref = `viewer.html?id=${encodeURIComponent(post.id)}`;
 
-        if (post.pdf) {
+        if (post.has_html) {
+          const readLink = document.createElement("a");
+          readLink.className = "external-link";
+          readLink.href = viewerHref;
+          readLink.textContent = "Read →";
+          actions.appendChild(readLink);
+        } else {
+          const comingSoon = document.createElement("span");
+          comingSoon.className = "writing-topline";
+          comingSoon.textContent = "Coming soon";
+          actions.appendChild(comingSoon);
+        }
+
+        if (post.has_pdf) {
           const pdfLink = document.createElement("a");
           pdfLink.className = "btn btn-secondary btn-small";
-          pdfLink.href = `post.html?id=${encodeURIComponent(post.id)}&view=pdf`;
+          pdfLink.href = `${viewerHref}&view=pdf`;
           pdfLink.textContent = "View PDF";
 
-          const pdfUrl = `topics/${String(post.id).replace(/^\/+/, "").replace(/\/+$/, "")}/${post.pdf}`;
+          const pdfUrl = `posts/${String(post.id).replace(/^\/+/, "").replace(/\/+$/, "")}/post.pdf`;
           urlExists(pdfUrl).then((exists) => {
             if (exists) actions.appendChild(pdfLink);
           });
         }
 
         const navigate = () => {
-          window.location.href = readLink.href;
+          window.location.href = viewerHref;
         };
 
         card.addEventListener("click", (event) => {
@@ -217,9 +198,9 @@
 
     const all = Array.isArray(index?.[INDEX_KEY]) ? index[INDEX_KEY] : [];
 
-    if (mechint) renderPosts(mechint, all.filter((p) => p.pillar === "mech_int"), "mechint");
-    if (mlsys) renderPosts(mlsys, all.filter((p) => p.pillar === "ml_sys"), "mlsys");
-    if (historical) renderPosts(historical, all.filter((p) => p.pillar === "historical_ai"), "historical");
+    if (mechint) renderPosts(mechint, all.filter((p) => p.pillar === "mechint"), "mechint");
+    if (mlsys) renderPosts(mlsys, all.filter((p) => p.pillar === "mlsys"), "mlsys");
+    if (historical) renderPosts(historical, all.filter((p) => p.pillar === "historical"), "historical");
   };
 
   boot();

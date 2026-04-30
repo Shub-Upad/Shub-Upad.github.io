@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>bizzaroworld-and-initial-summary</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="BizzaroWorld and Initial Summary_files/libs/clipboard/clipboard.min.js"></script>
+<script src="BizzaroWorld and Initial Summary_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="BizzaroWorld and Initial Summary_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="BizzaroWorld and Initial Summary_files/libs/quarto-html/popper.min.js"></script>
+<script src="BizzaroWorld and Initial Summary_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="BizzaroWorld and Initial Summary_files/libs/quarto-html/anchor.min.js"></script>
+<link href="BizzaroWorld and Initial Summary_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="BizzaroWorld and Initial Summary_files/libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="BizzaroWorld and Initial Summary_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="BizzaroWorld and Initial Summary_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="BizzaroWorld and Initial Summary_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="whats-actually-happening-inside-a-language-model-a-deep-dive-into-mechanistic-interpretability-part-1" class="level1">
+<h1>What’s Actually Happening Inside a Language Model? A Deep Dive into Mechanistic Interpretability, part 1</h1>
+<p><em>By Subhanga Upadhyay — MS CS 2026, Tufts University | AI Systems &amp; Mechanistic Interpretability</em></p>
+<hr>
+<p>There’s a question that haunts me: <strong>we built these systems, so why can’t we explain what they’re doing?</strong></p>
+<p>Over the past few weeks, I’ve been going deep on mechanistic interpretability, not just reading papers, but running experiments on Gemma 2B, working through ARENA’s interpretability curriculum, and building intuition from first principles. This post is a distillation of what I’ve learned, grounded in numbers from real experiments.</p>
+<p>Let me take you from hardware constraints all the way to circuit-level findings.</p>
+<hr>
+<section id="part-1-before-we-interpret-anything-understanding-what-lives-in-memory" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-before-we-interpret-anything-understanding-what-lives-in-memory">Part 1: Before We Interpret Anything: Understanding What Lives in Memory</h2>
+<p>As I ran experiments on this topic, I realized I didn’t actually know <em>what</em> I was fitting in my GPUs! It seemed to me that this was not trivia — it determined what I could could study and do on a HPC, so I needed to know this.</p>
+<p><strong>The VRAM equation breaks down into four components:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>When it applies</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Model weights</td>
+<td>Always</td>
+</tr>
+<tr class="even">
+<td>Gradients</td>
+<td>Training only</td>
+</tr>
+<tr class="odd">
+<td>Optimizer state</td>
+<td>Training only (Adam = 2× weight size)</td>
+</tr>
+<tr class="even">
+<td>Activations</td>
+<td>Training (backprop needs them); negligible at inference</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Precision determines weight size:</strong></p>
+<ul>
+<li>fp16: 2 bytes/parameter</li>
+<li>int8: 1 byte/parameter<br>
+</li>
+<li>(quantized) int4 (NF4): 0.5 bytes/parameter</li>
+</ul>
+<p><strong>Key numbers on an A100 80GB:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Precision</th>
+<th>VRAM (weights only)</th>
+<th>Inference?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gemma 2B</td>
+<td>fp16</td>
+<td>~4 GB</td>
+<td>✓ Comfortable</td>
+</tr>
+<tr class="even">
+<td>LLaMA 8B</td>
+<td>fp16</td>
+<td>~16 GB</td>
+<td>✓ Fine</td>
+</tr>
+<tr class="odd">
+<td>Gemma 32B</td>
+<td>fp16</td>
+<td>~64 GB</td>
+<td>✓ Tight but fits</td>
+</tr>
+<tr class="even">
+<td>LLaMA 70B</td>
+<td>fp16</td>
+<td>~140 GB</td>
+<td>✗ Need 4-bit</td>
+</tr>
+<tr class="odd">
+<td>LLaMA 70B</td>
+<td>int4</td>
+<td>~35 GB</td>
+<td>✓ With quantization</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why does inference use so much less memory than training?</strong></p>
+<p>During inference, you only need the weights and a small KV cache (negligible for short sequences), which is exactly the case for my experimentations, an ant compared to LLM providers who have to deal with arbitrarily large text that people apply at inference. Since the kv cache scales with seq_len (the input token sequence), this is a giant problem for those folks which is why tons of research is poured into KV cache optmization, and why the paper TurboQuant by Google was such a big deal!</p>
+<p>But for my experiments, the inference input tokens are always constrained (typically &lt; 100 words), so this is not a problem at all.</p>
+<p>In summary:</p>
+<ul>
+<li>During training: you need weights + gradients (same size as weights) + Adam optimizer state (2× weight size)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> + stored activations for backprop. A 16GB model becomes a ~64GB training job before you’ve touched the data.</li>
+</ul>
+<p>Testing a footnote here<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<p>This is why <strong>QLoRA</strong> is such a breakthrough. You quantize the frozen weights to 4-bit (halving the weight footprint), then train only low-rank adapter matrices (LoRA). Only the tiny adapter parameters need gradients and optimizer state. Result: you can fine-tune LLaMA 70B on a single A100 80GB. The math works.</p>
+<hr>
+</section>
+<section id="part-2-why-lora-works-and-why-it-shouldnt-surprise-you" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-why-lora-works-and-why-it-shouldnt-surprise-you">Part 2: Why LoRA Works — And Why It Shouldn’t Surprise You</h2>
+<p>Here’s the counterintuitive result: you can freeze 99.997% of a model’s weights, update only ~4.7M parameters out of 175B (GPT-3 scale), and match full fine-tuning performance on most benchmarks.</p>
+<p>Why?</p>
+<p><strong>The low-rank hypothesis.</strong> When you fine-tune a pretrained model, the weight update ΔW is intrinsically low-rank. Even though ΔW lives in a space of millions of dimensions, the actual information content of the adaptation lives in a tiny subspace — rank 4, 8, or 16.</p>
+<p>Formally, LoRA approximates:</p>
+<pre><code>W_new = W_pretrained + ΔW ≈ W_pretrained + BA</code></pre>
+<p>where <span class="math inline">\(B ∈ ℝ^(d×r)\)</span> and <span class="math inline">\(A ∈ ℝ^(r×k)\)</span>, with r &lt;&lt; min(d,k).</p>
+<p><strong>The intuition:</strong> pretraining already built a rich representation of language. Fine-tuning doesn’t rewrite that: it <em>steers</em> it. Steering is a low-rank operation. You’re amplifying existing directions in weight space, not building new ones.</p>
+<p>Aghajanyan et al.&nbsp;(2020) measured the intrinsic dimensionality of fine-tuning tasks and found that 90% of performance can be recovered using <strong>hundreds to low thousands</strong> of parameters, even for models with hundreds of millions of weights. The high-dimensional space is massively redundant.</p>
+<hr>
+</section>
+<section id="part-3-activation-patching-the-core-tool-of-mechanistic-interpretability" class="level2">
+<h2 class="anchored" data-anchor-id="part-3-activation-patching-the-core-tool-of-mechanistic-interpretability">Part 3: Activation Patching: the Core Tool of Mechanistic Interpretability</h2>
+<p>Now we get to the interesting part.</p>
+<p><strong>The fundamental question of mechanistic interpretability:</strong> which specific components of a neural network are causally responsible for a specific behavior?</p>
+<p>Activation patching answers this through controlled substitution experiments.</p>
+<p><strong>The setup:</strong></p>
+<p>Take two prompts, clean and corrupted, that differ in exactly one entity:</p>
+<pre><code>Clean: "The Roman god Jupiter is the Greek god ___"  → Zeus
+Corrupt: "The Roman god Ares is the Greek god ___"    → Mars</code></pre>
+<p>Run both through the model. Cache all intermediate activations.</p>
+<p><strong>The experiment:</strong> take a single activation from the corrupt run (e.g., the residual stream at layer 6, at the position of the entity token), patch it into the clean run at the same position, and measure what happens to the output.</p>
+<p><strong>The metric: logit difference:</strong></p>
+<pre><code>LD = logit(Zeus) - logit(Mars)</code></pre>
+<ul>
+<li>Clean run: LD is large and positive (model correctly prefers Zeus)</li>
+<li>Corrupt run: LD is large and negative (model correctly prefers Mars)</li>
+</ul>
+<p>When you patch a component, you measure:</p>
+<pre><code>ΔLD = LD_after_patch - LD_clean</code></pre>
+<p>A large negative ΔLD means the patched component was load-bearing for the correct answer.</p>
+<p><strong>To make this comparable across prompt pairs, we normalize:</strong></p>
+<pre><code>metric = (current_LD - corrupted_LD) / (clean_LD - corrupted_LD)</code></pre>
+<ul>
+<li>0 → component had no effect (null hypothesis holds)</li>
+<li>1 → component fully recovered clean performance</li>
+<li>Everything in between is meaningful signal</li>
+</ul>
+<p><strong>The null hypothesis:</strong> patching this component does nothing. The corrupt run stays broken. When you reject the null, you’ve found a causally relevant piece of the circuit.</p>
+<hr>
+</section>
+<section id="part-4-the-three-dimensional-patching-space" class="level2">
+<h2 class="anchored" data-anchor-id="part-4-the-three-dimensional-patching-space">Part 4: The Three-Dimensional Patching Space</h2>
+<p>Every component in a transformer produces an activation at every token position at every layer. This gives you a 3D space to explore:</p>
+<pre><code>              "The"  "capital"  "of"  "France"  "is"  "___"
+Layer 0:        ■        ■        ■       ■        ■      ■
+Layer 1:        ■        ■        ■       ■        ■      ■
+...
+Layer 17:       ■        ■        ■       ■        ■      ■</code></pre>
+<p><strong>Dimension 1 — Layer:</strong> which row to patch<br>
+<strong>Dimension 2 — Token position:</strong> which column<br>
+<strong>Dimension 3 — Component:</strong> residual stream, attention output, or MLP output at that cell</p>
+<p>Each experiment fixes some dimensions and sweeps others. This is exactly the methodology I used in BizzaroWorld (my mechanistic interpretability study on Gemma 2B):</p>
+<ul>
+<li><strong>Experiment 1:</strong> Fixed column (final token position), swept all rows → found late layers 15–17 bear causal load. Mean worst layer = 16.3 across all three selection modes.</li>
+<li><strong>Experiment 3:</strong> Fixed different column (entity token position), swept all rows → found early layers 0–14 store entity information. Mirror image of Experiment 1.</li>
+<li><strong>Experiment 2A:</strong> Fixed both column AND rows (layers 15–17), swept the third dimension (sublayers) → found residual stream dominates 60× over attention, 18× over MLP.</li>
+</ul>
+<hr>
+</section>
+<section id="part-5-the-ioi-task-a-benchmark-circuit" class="level2">
+<h2 class="anchored" data-anchor-id="part-5-the-ioi-task-a-benchmark-circuit">Part 5: The IOI Task: a Benchmark Circuit</h2>
+<p>The <strong>Indirect Object Identification (IOI)</strong> task is the canonical benchmark for mechanistic interpretability work. The prompt is:</p>
+<pre><code>"When John and Mary went to the shops, John gave the bag to ___"</code></pre>
+<p>The correct completion is “Mary” (the indirect object). The corrupted version swaps the names:</p>
+<pre><code>"When John and Mary went to the shops, Mary gave the bag to ___"</code></pre>
+<p>This task was chosen because: 1. It has a clear, unambiguous correct answer 2. It involves genuine multi-step reasoning (track two names, identify which is the IO) 3. GPT-2 Small solves it reliably, making it tractable to study</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/resid-pre-activation-patching.png" class="img-fluid figure-img"></p>
+<figcaption>resid_pre activation patching heatmap — layers × token positions, color = ioi_metric score</figcaption>
+</figure>
+</div>
+<p>The heatmap reveals immediately which (layer, position) cells, when patched from the clean run into the corrupt run, recover the correct answer. The signal concentrates in specific layers at specific token positions — not uniformly distributed.</p>
+<p><strong>Denoising vs.&nbsp;Noising: two Complementary Questions</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Mode</th>
+<th>Direction</th>
+<th>Question</th>
+<th>0 means</th>
+<th>1 means</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Denoising</td>
+<td>Clean → corrupt</td>
+<td>Is this component <em>sufficient</em>?</td>
+<td>Component irrelevant</td>
+<td>Fully recovers performance</td>
+</tr>
+<tr class="even">
+<td>Noising</td>
+<td>Corrupt → clean</td>
+<td>Is this component <em>necessary</em>?</td>
+<td>Component irrelevant</td>
+<td>Fully destroys performance</td>
+</tr>
+</tbody>
+</table>
+<p>A component that is both necessary and sufficient is the core of the circuit. Components that are sufficient but not necessary indicate redundancy. Components that are necessary but not sufficient indicate distributed computation, the finding I keep hitting on Gemma2B for factual recall.</p>
+<hr>
+</section>
+<section id="part-6-what-this-means-and-what-comes-next" class="level2">
+<h2 class="anchored" data-anchor-id="part-6-what-this-means-and-what-comes-next">Part 6: What This Means: and What Comes Next</h2>
+<p>The three-phase circuit is a clean, falsifiable claim about how Gemma 2B retrieves facts. It says:</p>
+<ol type="1">
+<li>Facts are stored as directions in the residual stream at early-to-mid layers</li>
+<li>Attention heads collectively route that signal to the prediction position</li>
+<li>Late layers read out the answer with minimal additional computation</li>
+</ol>
+<p><strong>What I haven’t done yet (next experiments):</strong></p>
+<ul>
+<li><p><strong>Path patching (Experiment 5):</strong> sharpens the distributed routing finding into a directed circuit graph — which components causally influence which others, and in what order</p></li>
+<li><p><strong>CMAP:</strong> cross-model activation patching between Gemma 2B base and instruction-tuned to see how fine-tuning changes the circuit</p></li>
+<li><p><strong>Cross-architecture replication:</strong> do LLaMA 8B, Mistral 7B, and Qwen 2.5 7B show the same three phases? If yes, this is a universal finding about transformer factual recall</p></li>
+</ul>
+<p><strong>The bigger question this points toward:</strong></p>
+<p>If factual recall follows a clean three-phase circuit, what does that tell us about how to diagnose hallucinations? If a model hallucinates, is the storage phase corrupted? The routing phase? Or is the readout reading from a correctly-stored but wrong fact?</p>
+<p>Mechanistic interpretability gives us the tools to ask — and potentially answer — that question precisely.</p>
+<hr>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<ul>
+<li>ARENA curriculum: <a href="https://arena.education">arena.education</a> — hands-down the best structured path into transformer interpretability</li>
+<li>Wang et al.&nbsp;(2022): “Interpretability in the Wild” — the IOI paper that established path patching</li>
+<li>Conmy et al.&nbsp;(2023): ACDC — automated circuit discovery</li>
+<li>TransformerLens: <a href="https://github.com/neelnanda-io/TransformerLens">github.com/neelnanda-io/TransformerLens</a> — the toolkit that makes all of this tractable</li>
+<li><a href="Fine-Tuning%20Enhances%20Existing%20Mechanisms:%20A%20Case%20Study%20on%20Entity%20Tracking,%20the%20paper">https://arxiv.org/html/2402.14811v1</a></li>
+</ul>
+<hr>
+<p><em>If you’re working on mechanistic interpretability, MLOps observability, or production ML reliability — I’d love to connect. I’m building Scorpion Labs, an AI consulting practice focused on making ML systems interpretable and reliable in production.</em></p>
+<hr>
+<p><strong>Tags:</strong> #MachineLearning #MechanisticInterpretability #AI #LLM #MLSystems #DeepLearning #Transformers #AIResearch</p>
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>you can use any optmizaer that you want!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>If you see this at the bottom of the preview, your syntax is working!<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

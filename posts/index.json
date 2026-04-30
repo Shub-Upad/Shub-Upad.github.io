@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "posts": [
+    {
+      "id": "mechint/ioi/bizzaroworld-initial-summary",
+      "title": "Bizzaroworld — Initial Summary",
+      "date": "2026-04-30",
+      "pillar": "mechint",
+      "has_html": true,
+      "has_pdf": true
+    }
+  ]
+}

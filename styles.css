@@ -302,6 +302,12 @@ h1,
   font-size: clamp(0.69rem, 0.7vw + 0.5rem, 0.77rem);
   transition: all 0.2s;
   font-family: "DM Mono", monospace;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .btn-primary {
@@ -657,6 +663,23 @@ h1,
   flex-wrap: wrap;
   gap: 0.7rem;
   margin-top: 1.2rem;
+}
+
+.viewer-intro {
+  padding-bottom: 1.2rem;
+}
+
+.viewer-frame {
+  border: 1px solid var(--border);
+  background: #000;
+}
+
+.viewer-embed {
+  width: 100%;
+  height: min(82vh, 980px);
+  border: 0;
+  display: block;
+  background: #000;
 }
 
 .post-body,
