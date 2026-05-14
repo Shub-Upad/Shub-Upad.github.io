@@ -872,7 +872,7 @@ h1,
 
 .empty-state {
   border: 1px dashed var(--border);
-  background: var(--surface-2);
+  background: transparent;
   padding: 1.4rem;
 }
 
