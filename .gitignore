@@ -6,8 +6,8 @@ quarto-cache/
 _quarto_cache/
 _quarto/
 
-# Ignore generated per-post Quarto asset folders
-posts/**/post_files/
+# Per-post Quarto `post_files/` (Bootstrap, quarto.js, etc.) is tracked so GitHub
+# Pages can render viewer iframes the same as localhost.
 
 # Ignore editor and system files
 .DS_Store
