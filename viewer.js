@@ -208,7 +208,6 @@
           fallback.hidden = false;
         }
       } else {
-        iframe.removeAttribute("src");
         iframe.title = "Post HTML";
         await renderHtmlWithRewrites(htmlUrl, base);
       }
