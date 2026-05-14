@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Reinforcement Learning | Scorpion Labs</title>
+  <meta name="description"
+    content="Reinforcement Learning hub for Scorpion Labs: roadmaps, systems, and research questions around RL and reward models." />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="site-shell">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">SCORPION<span>_</span>LABS</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle menu">Menu</button>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li class="nav-dropdown">
+            <button class="nav-dropdown-trigger" type="button" aria-haspopup="true"
+              aria-expanded="false">Research</button>
+            <ul class="nav-dropdown-menu" aria-label="Research pages">
+              <li><a href="mechint.html">MechInt</a></li>
+              <li><a href="mlsys.html">MLSys</a></li>
+              <li><a href="rl.html" class="active">RL</a></li>
+              <li><a href="historical.html">Historical</a></li>
+              <li><a href="experiments.html">Experiments</a></li>
+            </ul>
+          </li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="main">
+      <header class="page-intro container">
+        <p class="section-label">Reinforcement Learning</p>
+        <h1 class="section-title">Reinforcement Learning Hub</h1>
+        <p class="section-subtitle">Roadmaps, systems, and core questions for RL research. This space is dedicated to the agents, reward models, and circuit-level effects of RL training.</p>
+      </header>
+
+      <section class="section container" id="resources">
+        <p class="section-label">Resources</p>
+        <h2>Future resources and roadmap for RL</h2>
+        <ul>
+          <li>Redo Sutton and Barto</li>
+          <li>Spinning Up in Deep RL — OpenAI</li>
+          <li>Deep RL course by Hugging Face</li>
+          <li>DQN (Mnih et al. 2015), A3C (Mnih et al. 2016), PPO (Schulman et al. 2017), SAC (Haarnoja et al. 2018), TRPO (Schulman et al. 2015)</li>
+          <li>InstructGPT (Ouyang et al. 2022), Constitutional AI (Revisited), GRPO (DeepSeek 2024, replaces PPO in R1), DeepSeek R1 (2025), Let Me Think (various 2024-25)</li>
+          <li>Reinforcement Learning: Theory and Algorithms by Kakade</li>
+          <li>Direct Preference Optimization: Your Language Model is Secretly a Reward Model — Rafailov, Sharma, Mitchell, Ermon, Manning, Finn (Stanford, 2023). Lilian Weng's blog post "Alignment: RLHF and Beyond" covers DPO alongside PPO and RLHF.</li>
+        </ul>
+
+        <h3>Recommended timeline</h3>
+        <p><strong>Phase 1 (1-2 months):</strong></p>
+        <ul>
+          <li>Spinning Up implementation of PPO from scratch</li>
+          <li>Train on simple gym environment (CartPole → LunarLander)</li>
+          <li>Understand the code deeply, not just run it</li>
+        </ul>
+        <p><strong>Phase 2 (2-3 months):</strong></p>
+        <ul>
+          <li>Read GRPO paper</li>
+          <li>Implement GRPO on a small LLM (Qwen 1.5B or Gemma 2B)</li>
+          <li>Compare with your CAI experiments — same model, different training signal</li>
+          <li>Post on Scorpion Labs</li>
+        </ul>
+        <p><strong>Phase 3 (August onwards, combines with Evo2):</strong></p>
+        <ul>
+          <li>Process reward models on reasoning tasks</li>
+          <li>RL applied to genomic sequence models</li>
+          <li>Mechanistic interpretability of RL-trained models (how does the policy circuit differ from SL circuit?)</li>
+        </ul>
+        <p>That last question — what does RL training do to the internal circuits a model uses? — is almost completely unstudied. BizzaroWorld found the factual recall circuit in a pretrained model. What happens to that circuit after RLHF? After CAI? That's a paper nobody has written yet and it sits exactly at the intersection of your four pillars.</p>
+      </section>
+
+      <section class="section container" id="non-stationary">
+        <p class="section-label">Systems</p>
+        <h2>Non-stationary environments and large state spaces</h2>
+        <p>Self driving cars will be drawn on heavily because they face similar problems and are performing well. What can we learn about top tier systems that use RL to train agents to deal with this?</p>
+        <ol>
+          <li>Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model (MuZero) (Schrittwieser et al., DeepMind, 2019)</li>
+          <li>Planning in Complex Objective Spaces (Sampled MuZero) (Hubert et al., DeepMind, 2021)</li>
+          <li>Learning to Drive in a Day (Kendall et al., Wayve, 2018)</li>
+          <li>Model-Based Imitation Learning for Urban Driving (MILE) (Wayve / Valeo, 2022)</li>
+          <li>Mastering Diverse Domains through World Models (DreamerV3) (Hafner et al., 2023)</li>
+          <li>Andrej Karpathy - CVPR 2021 Keynote on Tesla Autopilot</li>
+          <li>Andrej Karpathy - Tesla AI Day 2021 / 2022</li>
+          <li>Learning to Drive in a Day</li>
+          <li>MILE</li>
+          <li>World Models (Ha and Schmidhuber, 2018)</li>
+        </ol>
+        <p>Waymo: HD maps + classical planning + learned components<br>
+        Wayve: end-to-end learned world model, minimal priors<br>
+        Tesla: massive supervised learning on human demonstrations + neural planner</p>
+        <p>Three different philosophies, all working at different levels. The comparison between them is itself a research paper waiting to be written from a mech interp perspective — what did each system learn, and how does the internal representation differ based on the training approach?</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <p class="footer-left">© 2026 Scorpion Labs | scorpionlabs.me</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
