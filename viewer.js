@@ -194,7 +194,7 @@
       return "pdf";
     })();
 
-    const setSrc = (mode) => {
+    const setSrc = async (mode) => {
       if (!iframe) return;
       if (fallback) fallback.hidden = true;
 
@@ -208,10 +208,9 @@
           fallback.hidden = false;
         }
       } else {
-        // Match Scorpion Labs behavior: load Quarto HTML directly.
-        // This avoids blob/base/hash edge cases and lets Quarto handle footnotes normally.
-        iframe.src = htmlUrl;
+        iframe.removeAttribute("src");
         iframe.title = "Post HTML";
+        await renderHtmlWithRewrites(htmlUrl, base);
       }
       setActive(mode === "pdf" ? "pdf" : "read");
     };
@@ -223,14 +222,14 @@
     if (titleEl) titleEl.textContent = id.split("/").slice(-1)[0];
     document.title = `Viewer — ${id} | Scorpion Labs`;
 
-    toggleRead?.addEventListener("click", () => {
-      if (hasHtml) setSrc("read");
+    toggleRead?.addEventListener("click", async () => {
+      if (hasHtml) await setSrc("read");
     });
-    togglePdf?.addEventListener("click", () => {
-      if (hasPdf) setSrc("pdf");
+    togglePdf?.addEventListener("click", async () => {
+      if (hasPdf) await setSrc("pdf");
     });
 
-    setSrc(initialMode);
+    await setSrc(initialMode);
   };
 
   run();
