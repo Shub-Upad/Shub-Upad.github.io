@@ -1,0 +1,19 @@
+# Ignore Quarto source and generated asset directories
+*.qmd
+.quarto/
+_quarto/
+quarto-cache/
+_quarto_cache/
+_quarto/
+
+# Ignore generated per-post Quarto asset folders
+posts/**/post_files/
+
+# Ignore editor and system files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Ignore local build artifacts
+*.log
