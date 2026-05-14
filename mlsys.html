@@ -62,11 +62,59 @@
         </div>
       </section>
 
-      <section class="section container" id="resources">
-        <p class="section-label">Resources</p>
-        <div class="empty-state">
-          <p>Coming soon — check back after May 2026</p>
-        </div>
+      <section class="section container" id="reinforcement-learning">
+        <p class="section-label">Reinforcement Learning</p>
+        <h2>Future resources and roadmap for RL</h2>
+        <ul>
+          <li>Redo Sutton and Barto</li>
+          <li>Spinning Up in Deep RL — OpenAI</li>
+          <li>Deep RL course by Hugging Face</li>
+          <li>DQN (Mnih et al. 2015), A3C (Mnih et al. 2016), PPO (Schulman et al. 2017), SAC (Haarnoja et al. 2018), TRPO (Schulman et al. 2015)</li>
+          <li>InstructGPT (Ouyang et al. 2022), Constitutional AI (Revisited), GRPO (DeepSeek 2024, replaces PPO in R1), DeepSeek R1 (2025), Let Me Think (various 2024-25)</li>
+          <li>Reinforcement Learning: Theory and Algorithms by Kakade</li>
+          <li>Direct Preference Optimization: Your Language Model is Secretly a Reward Model Rafailov, Sharma, Mitchell, Ermon, Manning, Finn — Stanford, 2023. Lilian Weng's blog (lilianweng.github.io) — her post "Alignment: RLHF and Beyond" covers DPO in context alongside PPO and RLHF.</li>
+        </ul>
+
+        <h3>Recommended timeline</h3>
+        <p><strong>Phase 1 (1-2 months):</strong></p>
+        <ul>
+          <li>Spinning Up implementation of PPO from scratch</li>
+          <li>Train on simple gym environment (CartPole → LunarLander)</li>
+          <li>Understand the code deeply, not just run it</li>
+        </ul>
+        <p><strong>Phase 2 (2-3 months):</strong></p>
+        <ul>
+          <li>Read GRPO paper</li>
+          <li>Implement GRPO on a small LLM (Qwen 1.5B or Gemma 2B)</li>
+          <li>Compare with your CAI experiments — same model, different training signal</li>
+          <li>Post on Scorpion Labs</li>
+        </ul>
+        <p><strong>Phase 3 (August onwards, combines with Evo2):</strong></p>
+        <ul>
+          <li>Process reward models on reasoning tasks</li>
+          <li>RL applied to genomic sequence models</li>
+          <li>Mechanistic interpretability of RL-trained models (how does the policy circuit differ from SL circuit?)</li>
+        </ul>
+        <p>That last question — what does RL training do to the internal circuits a model uses? — is almost completely unstudied. BizzaroWorld found the factual recall circuit in a pretrained model. What happens to that circuit after RLHF? After CAI? That's a paper nobody has written yet and it sits exactly at the intersection of your four pillars.</p>
+
+        <h2>Non-stationary environments and large state spaces</h2>
+        <p>Self driving cars will be drawn on heavily because they face similar problems and are performing well. What can we learn about top tier systems that use RL to train agents to deal with this?</p>
+        <ol>
+          <li>Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model (MuZero) (Schrittwieser et al., DeepMind, 2019)</li>
+          <li>Planning in Complex Objective Spaces (Sampled MuZero) (Hubert et al., DeepMind, 2021)</li>
+          <li>Learning to Drive in a Day (Kendall et al., Wayve, 2018)</li>
+          <li>Model-Based Imitation Learning for Urban Driving (MILE) (Wayve / Valeo, 2022)</li>
+          <li>Mastering Diverse Domains through World Models (DreamerV3) (Hafner et al., 2023)</li>
+          <li>Andrej Karpathy - CVPR 2021 Keynote on Tesla Autopilot</li>
+          <li>Andrej Karpathy - Tesla AI Day 2021 / 2022</li>
+          <li>Learning to Drive in a Day</li>
+          <li>MILE</li>
+          <li>World Models" (Ha and Schmidhuber, 2018)</li>
+        </ol>
+        <p>Waymo: HD maps + classical planning + learned components<br>
+        Wayve: end-to-end learned world model, minimal priors<br>
+        Tesla: massive supervised learning on human demonstrations + neural planner</p>
+        <p>Three different philosophies, all working at different levels. The comparison between them is itself a research paper waiting to be written from a mech interp perspective — what did each system learn, and how does the internal representation differ based on the training approach?</p>
       </section>
     </main>
 
