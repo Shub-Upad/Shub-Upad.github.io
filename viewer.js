@@ -163,7 +163,8 @@
     const hubMap = {
       mechint: "mechint.html#writing",
       mlsys: "mlsys.html#writing",
-      historical: "historical.html#writing"
+      historical: "historical.html#writing",
+      residualstream: "residualstream.html#writing"
     };
 
     if (backEl && hubMap[pillar]) {
