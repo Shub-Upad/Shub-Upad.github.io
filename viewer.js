@@ -119,8 +119,8 @@
     }
 
     // Quarto sometimes emits assets under "<Title>_files/..." while our copied folder is "post_files/...".
-    // If the post folder contains post_files/, rewrite any "*_files/" references to "post_files/".
-    const postFilesExists = await urlExists(`${baseHref}post_files/`);
+    // Check a specific file (not a directory) since GitHub Pages returns 404 for bare directory URLs.
+    const postFilesExists = await urlExists(`${baseHref}post_files/libs/quarto-html/quarto.js`);
     if (postFilesExists) {
       html = html.replace(/(["'])(?!https?:\/\/)([^"']+?)_files\//g, "$1post_files/");
     }
