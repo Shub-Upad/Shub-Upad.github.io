@@ -16,6 +16,14 @@
       "pillar": "mechint",
       "has_html": true,
       "has_pdf": true
+    },
+    {
+      "id": "Residual Stream/superintelligence",
+      "title": "Superintelligence: the demise of humanity",
+      "date": "2026-06-21",
+      "pillar": "residualstream",
+      "has_html": true,
+      "has_pdf": true
     }
   ]
 }

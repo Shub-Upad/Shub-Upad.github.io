@@ -182,8 +182,9 @@
     const mechint = document.getElementById("mechint-writing");
     const mlsys = document.getElementById("mlsys-writing");
     const historical = document.getElementById("historical-writing");
+    const residualstream = document.getElementById("residualstream-writing");
 
-    if (!mechint && !mlsys && !historical) {
+    if (!mechint && !mlsys && !historical && !residualstream) {
       return;
     }
 
@@ -201,6 +202,7 @@
     if (mechint) renderPosts(mechint, all.filter((p) => p.pillar === "mechint"), "mechint");
     if (mlsys) renderPosts(mlsys, all.filter((p) => p.pillar === "mlsys"), "mlsys");
     if (historical) renderPosts(historical, all.filter((p) => p.pillar === "historical"), "historical");
+    if (residualstream) renderPosts(residualstream, all.filter((p) => p.pillar === "residualstream"), "residualstream");
   };
 
   boot();

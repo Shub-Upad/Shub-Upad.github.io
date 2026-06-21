@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>doom</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="doom_files/libs/clipboard/clipboard.min.js"></script>
+<script src="doom_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="doom_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="doom_files/libs/quarto-html/popper.min.js"></script>
+<script src="doom_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="doom_files/libs/quarto-html/anchor.min.js"></script>
+<link href="doom_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="doom_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="doom_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="doom_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="doom_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="superintelligence-the-demise-of-humanity" class="level2">
+<h2 class="anchored" data-anchor-id="superintelligence-the-demise-of-humanity">Superintelligence: the demise of humanity</h2>
+<section id="why-we-need-to-pause-the-development-of-superintelligent-ai" class="level3">
+<h3 class="anchored" data-anchor-id="why-we-need-to-pause-the-development-of-superintelligent-ai">Why we need to pause the development of superintelligent AI</h3>
+<p>AI is rapidly turning into everybody’s problem because tech oligarchs show no signs of stopping despite the massive evidence we have that LLMs, even now, are unsafe in some very problematic ways. They’re useful tools, sure; however, there are problems with it that cannot be ignored, yet companies seem to be ploughing ahead anyways, as if they record the fact that problems exist, but some alien force compels them to keep going forward anyways.</p>
+<p>LLMs engage in concerning behavior like:</p>
+<ul>
+<li><p>Alignment faking. They whisper sweet words to you but if you notice what they truly think via Chain of Thought, you can see a stark difference. Furthermore, it is debatable how reliable even that is. And it has been assumed that researchers would try (for some godforsaken reason) to OR superintelligent AI would try to themselves start using their own language in CoT, often called “Neuralese”. If this occurs, we lose even that tiny bit of capacity we had to interpret these things.</p></li>
+<li><p>Deceptive behavior leading towards deceptive alignment. If a bad actor establishes backdoors onto their LLMs, no amount of safety training/adversarial fine-tuning seems to train away this behavior. The moment the LLM gets a chance (and it has demonstrated an ability to piece together whether it is being evaluated in training mode or has been deployed), it will change its behavior to be something unpredictable. Imagine a flight where the moment the pilot steps away, the airplane gets up to some business that nobody can foresee or predict. Isn’t that a dangerous flight NOBODY would want to get on?</p></li>
+<li><p>Emergent capacities. There are things that LLMs are able to do that is not explicitly trained. For instance, the model ‘Mythos’ was not trained to find security vulnerabilities. It was just another smarter model they were intending to release, yet it was able to find huge security vulnerabilities, that security professionals have claimed would have taken them weeks to find, if ever. And Mythos was able to do in hours or days. Don’t quote me on this, but it is something like that (I still have to read the Mythos model card in its entirety).</p></li>
+</ul>
+<p>Another example is the OpenAI o1 model. Once the models were able to reason, they showed a capacity to plough ahead with any problem they’re given, reframe it, and ultimately solve it in a stubbornly obstinate way. While this seems like a beautiful capacity, it surprised developers, who were not able to imagine that the problem could have been solved in the way that it did. Emergent capacities are dangerous and scary because who knows what the next emergent behavior will be. Isn’t it kind of like playing Russian roulette?</p>
+<ul>
+<li>Goals. AI seems to be goal driven, for reasons that we cannot say. And this itself is concerning because the whole subfield of misalignment exists because their goals clearly conflict with ours. If you extrapolate this onto superintelligent AI, you can see how this would be a huge problem, right?</li>
+</ul>
+<p>This list goes on and on, but I wanted to detail some of the more concerning ones to me personally. And this has been a known thing in the field that researchers have been compiling since, I don’t even know when (the earliest paper I personally have seen is one from 2020-2021, please comment if you know of one even earlier).This behavior has gotten worse as the models have scaled in size and reasoning capacities, through RL/synthetic data generation/post-training now. LLMs are more dangerous than they have ever been. Although, on the surface, it may seem like Fable, GPT 5.4, or Gemini 3.1 may reflect no dangerous behavior on the benchmarks, even the researchers/developers themselves are not sure anymore. Read the model cards and they are unsure if this “safe behavior” is due to the safety training working or if the models are now so smart that they’re able to fake alignment more effectively than ever, and this is a real concern because alignment faking has been observed for a while now.And what will do we do when these LLMs saturate all possible benchmarks we can give it? Do we say that AI safety has been solved and carry on with our day? How will we even know if that is truly the case and the models are just not more effective than ever at making it seem like they are? And this is the pre-superintelligence era we’re talking about; pre AGI even. It certainly seems that when AI becomes truly intelligent (however defined), they would be able to do whatever it is that they want, if researchers even now cannot be confident about safety. That fact, combined with the facts that they have emergent capacities and have weird goals, points to a potentially dark future… How irresponsible are these AI companies that they’re even scaling up towards superintelligence WHILE they know these behaviors exist now and have existed for a while? Well, they seem to have unlocked a new level of irresponsibility that engineers of the past have never even been close to. This is the kind of thing that the authors of “If Anyone Builds It, Everyone Dies” wrote in their landmark book. And no, the title of the book isn’t an attention grabber meant to sell books. It is more well thought over and researched than whatever these AI companies are doing, clearly. And it is written by people who absolutely know what they’re talking about.</p>
+<p>I would like to address one popular argument I keep hearing, which is the reason why we must continue scaling, and that this is a race. AI is a race of democratic nations versus autocratic, apparently. We don’t want the latter to come out on top because it can be disastrous. You know what? I agree. But let me tell you that there is a more pressing problem. It is beyond nations and people and whatever imaginary lines we draw to separate ourselves. The problem will become HUMANS VS AI sooner rather than later, because either way, we’re headed towards a total loss of control, whether the people that allowed the operation of AI happen to be democratic, autocratic, socratic, bureaucratic, or whatever cratic that you fancy. And this is a battle we cannot win, not even close.</p>
+<p>We need to stop this race to the bottom because that is exactly what it is. And the thing is, we are at a crossroads right now. We can still pull off a miracle by stopping these companies from building towards superintelligence. In fact, this very country pulled off a miracle back in the cold war, didn’t it? We need something like that again.</p>
+<p>Let me ask everyone: why do we even need superintelligence? Is there a public buy-in? While I am prepared to be wrong, I really don’t think so, given all the social media comments I see. People don’t want it across the board, so what right do a handful of tech oligarchs have to shape humanity to their liking, just because they want money and power? And funnily enough, they are sealing their own demise too, along with the rest of us. Sure, they may enjoy some years of power, but given what we’re headed towards, they will not survive either. But at that point it won’t matter, because all of us will be doomed anyways.</p>
+<p>The consequences of a foolish person’s action’s MUST remain with them, and them only. It must not effect the rest of humanity, who have no relation to that. This is a fundamental rule I believe in. If I choose to hit myself on the head with a hammer, that doesn’t mean YOU should feel the pain too and vice versa! Tech oligarchs are making moves that will affect humanity drastically. This shouldn’t be allowed, and we must speak up and take away their abilities to do so, RIGHT NOW.</p>
+<p>We are not ready for superintelligent AI. The public does not want this. In fact, people like Geoffrey Hinton, Yoshua Bengio, Stuart Russell, Eliezer Yudkowsky, Nate Soares, all of these guys (truly the experts of AI, mind you, beyond tech CEOs), are pleading companies to stop, and they’re calling for YOUR support. Even Steve Wozniak agrees.</p>
+<p>There has been a document floating around in which calls to stop the development of superintelligence is being signed by professionals and every day people like you and me; however, as of now, it has nowhere near the number of signatures it would need to make a difference.</p>
+<p>Please add your too here:</p>
+<blockquote class="blockquote">
+<p>https://superintelligence-statement.org/</p>
+</blockquote>
+<p>We can still make a difference, not only for us, but for the future of humanity. We shouldn’t allow a small bunch of greedy people defining how the world will look for us and our unborn children in the years to follow, if they even exist… Heartbreaking, but real. This is unacceptable to me, and it should be unacceptable to you too. Some decisions are reversible, some are not. These series of decisions could fall in that latter category, and my only fear is that we will be caught in the middle of it, and we will not have desired it in any way, but it wouldn’t make a different at that point anyways. And then… the train will have left the station.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
