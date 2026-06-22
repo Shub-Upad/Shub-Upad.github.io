@@ -24,6 +24,14 @@
       "pillar": "residualstream",
       "has_html": true,
       "has_pdf": true
+    },
+    {
+      "id": "residualstream/regulation",
+      "title": "To regulate, or not to relate (that is so not the question)",
+      "date": "2026-06-21",
+      "pillar": "residualstream",
+      "has_html": true,
+      "has_pdf": true
     }
   ]
 }
