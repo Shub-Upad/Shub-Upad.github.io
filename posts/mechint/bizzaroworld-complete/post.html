@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -33,7 +33,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="post_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="post_files/libs/quarto-html/anchor.min.js"></script>
 <link href="post_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="post_files/libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="post_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="post_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="post_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="post_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -63,6 +63,25 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="post.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
 <main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">BizzaroWorld, complete replication and findings on Gemma2B and Gemma12B-IT</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
 
 <section id="bizzaroworld-complete-replication-and-findings-on-gemma2b-and-gemma12b-it" class="level1">
 <h1>BizzaroWorld, complete replication and findings on Gemma2B and Gemma12B-IT</h1>
@@ -110,11 +129,31 @@ ul.task-list li input[type="checkbox"] {
 </blockquote>
 <section id="head-routing-2b-vs-12b" class="level3">
 <h3 class="anchored" data-anchor-id="head-routing-2b-vs-12b">3.3 Head routing: 2B vs 12B</h3>
-<p><img src="./images/Gemma2B-head-routing.png" class="img-fluid"></p>
-<p><img src="./images/Gemma12B-head-routing.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./figures/Gemma2B-head-routing.png" class="img-fluid figure-img" alt="Heatmap of per-head path patching scores for Gemma 2B, showing distributed factual recall routing across multiple attention heads"></p>
+<figcaption>Gemma 2B attention head routing — per-head logit difference contributions across layers; signal is distributed with no dominant single head (max contribution ~23% of total swing)</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./figures/Gemma12B-head-routing.png" class="img-fluid figure-img" alt="Heatmap of per-head path patching scores for Gemma 12B-IT, showing concentrated factual recall in one dominant head and one hyper-suppressive head"></p>
+<figcaption>Gemma 12B-IT attention head routing — scaled circuit with a dominant hub head (~74.6% of performance gap) and a suppressive head exceeding the clean baseline (+1.109), absent in Gemma 2B</figcaption>
+</figure>
+</div>
 <p>I had seen that different categories of facts behave differently in Gemma-2B, and this was further validated in Gemma-12B-IT. For instance, this graph shows how 5 different categories of facts. <em>For the experiments, I had designed 20 general categories of facts, ranging from geography to animals, as described below</em>.</p>
-<p><img src="./images/experimental-categories.png" class="img-fluid"></p>
-<p><img src="./images/Gemma12B-categories-totalswing.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./figures/experimental-categories.png" class="img-fluid figure-img" alt="Grid or list of the 20 fact categories designed for the BizzaroWorld prompt battery"></p>
+<figcaption>20 experimental fact categories used in BizzaroWorld, spanning geography, science, animals, history, and other knowledge domains</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./figures/Gemma12B-categories-totalswing.png" class="img-fluid figure-img" alt="Bar chart of TotalSwing scores per knowledge category for Gemma 12B-IT, showing which fact types have the strongest and weakest circuit encoding"></p>
+<figcaption>TotalSwing metric by fact category in Gemma 12B-IT — variation in how strongly different knowledge types are encoded in the factual recall circuit</figcaption>
+</figure>
+</div>
 </section>
 </section>
 <section id="tokenizer-differences-and-their-implications" class="level2">

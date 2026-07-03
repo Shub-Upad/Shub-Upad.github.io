@@ -18,6 +18,54 @@
       "has_pdf": true
     },
     {
+      "id": "mechint/bizarroworld-path-patching",
+      "title": "BizzaroWorld: Path Patching Experiments",
+      "date": "2026-07-03",
+      "pillar": "mechint",
+      "has_html": true,
+      "has_pdf": true
+    },
+    {
+      "id": "mechint/circuits",
+      "title": "The basics of circuitry",
+      "date": "2026-07-03",
+      "pillar": "mechint",
+      "has_html": true,
+      "has_pdf": true
+    },
+    {
+      "id": "mechint/SAE",
+      "title": "Sparse Autoencoders, Gemma Scope, and NLAs",
+      "date": "2026-07-03",
+      "pillar": "mechint",
+      "has_html": true,
+      "has_pdf": true
+    },
+    {
+      "id": "mechint/scaling_laws",
+      "title": "Scaling Scaling Laws with Board Games",
+      "date": "2026-07-03",
+      "pillar": "mechint",
+      "has_html": true,
+      "has_pdf": true
+    },
+    {
+      "id": "mechint/alignment",
+      "title": "AI Alignment: Papers and Notes",
+      "date": "2026-07-03",
+      "pillar": "mechint",
+      "has_html": true,
+      "has_pdf": true
+    },
+    {
+      "id": "mechint/deception_and_goal_guarding",
+      "title": "Deception and Goal Guarding in LLMs",
+      "date": "2026-07-03",
+      "pillar": "mechint",
+      "has_html": true,
+      "has_pdf": true
+    },
+    {
       "id": "residualstream/superintelligence",
       "title": "Superintelligence: the demise of humanity",
       "date": "2026-06-21",

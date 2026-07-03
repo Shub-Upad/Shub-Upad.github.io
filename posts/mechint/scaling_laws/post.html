@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>post</title>
+<title>Scaling Scaling Laws with Board Games</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -38,54 +38,92 @@ ul.task-list li input[type="checkbox"] {
 <link href="post_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="post_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#scaling-scaling-laws-with-board-games" id="toc-scaling-scaling-laws-with-board-games" class="nav-link active" data-scroll-target="#scaling-scaling-laws-with-board-games">Scaling scaling laws with board games</a></li>
+  <li><a href="#the-blessing-of-scaling" id="toc-the-blessing-of-scaling" class="nav-link" data-scroll-target="#the-blessing-of-scaling">The blessing of scaling</a></li>
+  <li><a href="#methods-and-results" id="toc-methods-and-results" class="nav-link" data-scroll-target="#methods-and-results">Methods and Results</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="post.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Scaling Scaling Laws with Board Games</h1>
+</div>
 
 
 
-<section id="to-regulate-or-not-to-relate-that-is-so-not-the-question" class="level2">
-<h2 class="anchored" data-anchor-id="to-regulate-or-not-to-relate-that-is-so-not-the-question">To regulate, or not to relate (that is so not the question)</h2>
-<p>Tech CEOs are crying like toddlers about not regulating AI. But… why?</p>
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="scaling-scaling-laws-with-board-games" class="level2">
+<h2 class="anchored" data-anchor-id="scaling-scaling-laws-with-board-games">Scaling scaling laws with board games</h2>
+<p>For individual researchers such as myself, it can be tough to do research. I don’t have infrastructure, compute, and am severely bottlenecked in these aspects which make it difficult to do full research (exmaple, when I tried replicating and extending Anthropic’s Constitutional AI on a limited 30GB disk quota constraint on my university’s HPC). While I appreciated the fact that I even had an HPC in the first place, it was no way to do proper research. But, this paper covers the fact that oftentimes, such things are not even needed! Let’s explore what the author means!</p>
 </section>
-<section id="regulation-from-first-principles" class="level2">
-<h2 class="anchored" data-anchor-id="regulation-from-first-principles">Regulation, from first principles</h2>
-<p>Let’s imagine we are looking at the world through completely fresh eyes right now. We walk outside and we see traffic signs, crossroad signals, buildings with civil engineering codes, elevators with clear-as-day weight capacities, you notice the rules that the water you drink must adhere to, the pharmaceutical drugs you try to buy at CVS (or your favorite drug store), your food, your alcohol, the very computer you are reading this on, your cellphones, even your biggest grocery stores or retailers.</p>
-<p>What I am getting at is this: <strong>there is no industry with no regulation</strong>. When we engineer or innovate, the first questions on our minds is always: will this be safe for other people? Will they able to use it as it was designed? Will this make their lives better?</p>
+<section id="the-blessing-of-scaling" class="level2">
+<h2 class="anchored" data-anchor-id="the-blessing-of-scaling">The blessing of scaling</h2>
+<p>We have observed that the scaling laws are a real phenomena with LLMs and it is relatively accurate to predict things on the basis of where on the curves we pick to do analysis on. So, if that were to be true, we could do experiments using smaller, cheaper models, extract key results and scale up the results such that we’d know that they’d hold up on the basis of the scaling laws. This is actually an awesome argument, and tells us an important fact: <strong>you don’t need to wait to have amazing resources to do novel and important experimentations, as long as you can show that the results hold at some point in the curve. The results could be replicated later down the line, and, in fact, it is predictable that they would!</strong></p>
+<p>While this is true, it is also not necessarily the case because scaling does seem to do something qualitatively different too. Example, I saw a self-reinforcing attention head that was not present in Gemma2B versus Gemma12B-IT, so it is important to not take this idea too far. It seems, some ideas can only be pursued precisely when you have access to such resources. But, that doesn’t mean <strong>every experiment that is important in AI right now</strong> falls into that category!</p>
+<p>In this paper, the authors pick the task of playing the board game Hex and using AlphaZero to play it.</p>
+<p>This paper is interesting because, it looks at measuring and developing relationships in all of us on the basis of multi-agent RL settings, which are very different to single-agent settings. In zero sum games, the metric used to measure performance of the system depends on the task and the other agent(s) too. Example, for chess, ELO scores are calculated, not only for the current agent but also all the other agent(s) it competes again: the likely winner is the one who has the bigger score, so the difference between the two values is used.</p>
 </section>
-<section id="tech-and-especially-ai-has-escaped-regulation" class="level2">
-<h2 class="anchored" data-anchor-id="tech-and-especially-ai-has-escaped-regulation">Tech (and especially AI) has escaped regulation</h2>
-<p>And that is strange. For some reason, technology and software inhabit this mystical territory where it seems no regulation exists, even though, increasingly so, people live two lives in 2026: their life in the digital world and their life outside, IRL.</p>
-<p>Banks, brokerages, retailers, universities/schools/think tanks/companies, defense agencies, political campaigns, EVERYBODY and EVERY KIND OF ENTITY uses the digital world as their main infrastructure now. This is exactly why the Mythos model was such big news <strong>because it was able to disproportionately find vulnerabilities, and importantly, exploits, that could potentially damage all of this</strong>. Scary.</p>
-<p>If software is unregulated for the most part, AI is completely unregulated right now, because most people don’t even know how it works. To regulate, regulators need to have experts by their side that assists them, no? On top of that, tech CEOs are constantly asking governments to regulate even less now, which means… No safety? Or whatever safety that these companies deem is enough for us to shut up?</p>
-<p><strong>Human engineering has never been so lax and irresponsible</strong>. This is terrible tragedy because this is the exact moment where we need to tread very lightly. AI has reached a point where it can really go out of hand. This is the total loss of control argument that Alan Turing made in his speech about superintelligent machines.</p>
-<blockquote class="blockquote">
-<p>In his 1951 lecture in Manchester, “Intelligent Machinery, A Heretical Theory,” Alan Turing speculated that if machines learn by experience, they would eventually outstrip human capabilities, writing: <em>“At some stage therefore, we should have to expect the machines to take control.”</em></p>
-</blockquote>
-<p>And we have nearly reached this point, <strong>WHILE we have problems, such as alignment faking, our inability to remove deceptively installed backdoors on LLMs, model collapse, idea implanting (I will talk more about what this means in another post), emergent capabilities, our complete inscrutability of their true goals, and the risk that our reliance of CoT (Chain of Thought) will soon be useless anyways because perhaps it will be more efficient for intelligent AI to talk in their own language i.e.&nbsp;Neuralese</strong>. And these the exists risks right now, which will get scaled up dramatically as models grow in size and capabilities. In fact, some of these risks have been particularly noticed TO get worse with scale.</p>
-</section>
-<section id="what-do-we-do" class="level2">
-<h2 class="anchored" data-anchor-id="what-do-we-do">What do we do?</h2>
-<p>We have enforced regulation onto our many industries to safeguard people from damage. And that is precisely what we need with AI right now. <strong>We must prevent an absolute loss of control</strong>. AI companies should be heavily regulated to provide absolute and total proof with all of their products that there would be no chance of loss of control by humanity. AI companies should be PREVENTED from trying to lobby and sway governments and venture capitalists into not providing this much; <strong>it should be a damn crime against humanity for them to even attempt to do so</strong>.</p>
-<p>Stuart Russell makes a funny, true, and painful observation about this in an interview, which you can watch <a href="https://www.youtube.com/watch?v=OGpTw4tthko">here</a>.</p>
-<blockquote class="blockquote">
-<p>The same people who are complaining are the same tech executives who fly to their fancy conferences on regulated airplanes flown by regulated pilots, who are driven to their hotel rooms by regulated taxis driven by regulated drivers with driving licenses (I would hope), to regulated hotel rooms held together civil engineering safety standards, where they eat food regulated by the FDA, before taking regulated melatonin pills to help them sleep (after a long, hard day of pushing governments and lobbyists and regulators towards anti-regulation).</p>
-</blockquote>
-<p>You can’t make this up, you seriously can’t.</p>
-<p>To be completely fair, there are some players in the game that seem more responsible than others. They advocate for safety and various other issues, such as the safe dissemination of benefits, loss of control, concentration of power, or the need for regulation. And these are the players I hope that will go to the top. But at the same time…</p>
-<p>We need to step up and speak up. I believe in the power of collective humanity. <strong>Our voices are not pointless</strong>. At every similar point in history, humanity has come together for the common goal of… well… humanity’s survival, and done what’s right. Examples:</p>
-<ol type="1">
-<li><p>The banning of CFCs for the environment (the Montreal protocol)</p></li>
-<li><p>The Treaty on the Non-Proliferation of Nuclear Weapons (NPT)</p></li>
-<li><p>The international summit to address the ethics of altering human DNA through technologies like CRISPR for human gene editing</p></li>
-</ol>
-<p>We can still pull this off. It would be kinda miraculous at this point, but it can be done, if the people’s voices are loud enough. I think people united for a cause can move mountains. What is stopping a mere industry filled with myopic dorks and some dumbass venture capitalists?</p>
+<section id="methods-and-results" class="level2">
+<h2 class="anchored" data-anchor-id="methods-and-results">Methods and Results</h2>
+<p>The authors developed fast versions of AlphaZero and trained many different models using it (you need to experiment doing precisely this. PropperShopper would be a good first environment to work on!). The authors used machines with GPU rented from vast.ai. Using Lambda would be a good, cheap alternative too.</p>
+<p>When AlphaGo agents are trained to play Hex perfectly, an interesting relationship arises. You can estimate how much compute you need, down to the level of how much for training versus testing, depending on the Hex board size and the level of expertise you want the agents to exhibit. That level of precision is an interesting result, no doubt.</p>
+<p>While the authors drew heavily inspirations from open source implementations of AlphaZero, they successfully scaled it down, as their experiment was a narrowed and less complex task than superhuman play at Go. They also wrote the code to work completely on the GPU, whereas there are some components of AlphaZero (the environment and the MCTS bits) that were CPU based.</p>
+<p>MCTS is actually CPU bound. MCTS is a sequential tree search — each simulation depends on the result of the previous one to decide where to explore next. The UCB selection formula at each node:</p>
+<p><span class="math display">\[UCT = Q(s,a) + c \cdot P(s,a) \cdot \frac{\sqrt{N(s)}}{1 + N(s,a)}\]</span></p>
+<p>requires knowing the current visit counts before selecting the next node. You can’t parallelize this the way you parallelize matrix multiplications — each step has a data dependency on the previous step.</p>
 </section>
 
 </main>

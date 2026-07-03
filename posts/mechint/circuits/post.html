@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>The basics of circuitry</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="post_files/libs/clipboard/clipboard.min.js"></script>
+<script src="post_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="post_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="post_files/libs/quarto-html/popper.min.js"></script>
+<script src="post_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="post_files/libs/quarto-html/anchor.min.js"></script>
+<link href="post_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="post_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="post_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="post_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="post_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#zoom-in-an-introduction-to-circuits" id="toc-zoom-in-an-introduction-to-circuits" class="nav-link active" data-scroll-target="#zoom-in-an-introduction-to-circuits">Zoom In: An Introduction to Circuits</a></li>
+  <li><a href="#the-problem" id="toc-the-problem" class="nav-link" data-scroll-target="#the-problem">The Problem</a></li>
+  <li><a href="#why-study-this" id="toc-why-study-this" class="nav-link" data-scroll-target="#why-study-this">Why study this?</a></li>
+  <li><a href="#position-invariance" id="toc-position-invariance" class="nav-link" data-scroll-target="#position-invariance">Position Invariance</a></li>
+  <li><a href="#superposition" id="toc-superposition" class="nav-link" data-scroll-target="#superposition">Superposition</a></li>
+  <li><a href="#universality" id="toc-universality" class="nav-link" data-scroll-target="#universality">Universality</a></li>
+  <li><a href="#a-mathematical-framework-for-transformer-circuits" id="toc-a-mathematical-framework-for-transformer-circuits" class="nav-link" data-scroll-target="#a-mathematical-framework-for-transformer-circuits">A Mathematical Framework for Transformer Circuits</a></li>
+  <li><a href="#an-overview-of-the-transformer-architecture" id="toc-an-overview-of-the-transformer-architecture" class="nav-link" data-scroll-target="#an-overview-of-the-transformer-architecture">An Overview of the Transformer Architecture</a></li>
+  <li><a href="#n-layer-transformers" id="toc-n-layer-transformers" class="nav-link" data-scroll-target="#n-layer-transformers">N Layer Transformers</a></li>
+  <li><a href="#where-does-deep-learning-get-its-power-from" id="toc-where-does-deep-learning-get-its-power-from" class="nav-link" data-scroll-target="#where-does-deep-learning-get-its-power-from">Where does deep learning get its power from?</a></li>
+  <li><a href="#induction-heads" id="toc-induction-heads" class="nav-link" data-scroll-target="#induction-heads">Induction Heads</a></li>
+  <li><a href="#the-mlp-sublayer" id="toc-the-mlp-sublayer" class="nav-link" data-scroll-target="#the-mlp-sublayer">The MLP Sublayer</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="post.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">The basics of circuitry</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="zoom-in-an-introduction-to-circuits" class="level2">
+<h2 class="anchored" data-anchor-id="zoom-in-an-introduction-to-circuits">Zoom In: An Introduction to Circuits</h2>
+<p>The post that started it all, the mechanistic interpretability analysis into CNNs and ImageNet, analysis into how CNNs gradually build line detectors, curve detectors, building into polysemantic neurons. Re-reading this post now, I can clearly see that some of the statements made in this blog post were overstatements. Statements such as, “you can literally read algorithms off the weights of the neural networks” or “there’s often a symmetry around the circuitry”, made me very excited. But after having done some experiments of my own and seeing what OGs of the field/the field itself is saying now: these findings are difficult to generalize to LLMs.</p>
+</section>
+<section id="the-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-problem">The Problem</h2>
+<p>CNNs and how they work with images are well known. In fact, computer vision has been loud in saying how it is neurons interact with each other to work here. However, transformers are different beasts altogether. We’re no longer trying to find interpretability within one layer of one neural network. In the example of LLaMa-70B, there are 80 layers of repeating 64 query attention heads (but only 8 KV layers because they use Grouped Query Attention i.e.&nbsp;GQA). So, the number of neurons you would need to profile to replicate what this post did (which is exactly what I wanted to do in the beginning) is… well, very challenging. Like, extremely challenging. And that doesn’t even lead to a satisfactory answer because people like Neel Nanda have already tried to do so, albeit for a much smaller model i.e.&nbsp;GPT-2 and other models supported now too: <a href="https://neuroscope.io/">Neuroscope</a></p>
+</section>
+<section id="why-study-this" class="level2">
+<h2 class="anchored" data-anchor-id="why-study-this">Why study this?</h2>
+<p>Although most of the things discussed in this post are very computer vision-y in nature (edge detectors, position invariant object detection, high-low frequency detectors), it is interesting to keep in mind all the parallels, especially as I am attempting to read most interesting developments in the field over the last couple years, as I attempt to create the next idea for <a href="https://github.com/Azazel5/Bizzaro-World">bizzaro world</a>, as I have just finished experimentation on Gemma27B-IT.</p>
+</section>
+<section id="position-invariance" class="level2">
+<h2 class="anchored" data-anchor-id="position-invariance">Position Invariance</h2>
+<p>Interestingly, there is some aspect of whatever it is that LLMs and suppression heads do here. For instance, sometimes, some collection of neurons catch an object pointed left and the other collection will find it pointed right. These are “unioned” together is what they claim, but they themselves say there are some XOR like properties present. Sloppy. What they mean is they have discovered something in between union and XOR: the two pathways detect left and right curves independently, which is union-like in that either can activate the unit, but then they inhibit each other, which means when both are present simultaneously the output is suppressed relative to either alone. That’s not a union, that’s closer to a soft XOR or a winner-take-all dynamic.</p>
+<p>This actually maps onto something directly relevant to your own findings — your L46H4 and L46H5 in Gemma 12B sitting adjacent with opposing signs is structurally analogous. One load-bearing, one hyper-suppressive, in the same layer. That’s potentially the same push-pull inhibition dynamic the Distill paper is describing here, just at the attention head level rather than the neuron level in a CNN.</p>
+<blockquote class="blockquote">
+<p>The load-bearing and suppressive heads at the same layer aren’t independent, they’re implementing a push-pull dynamic that has the same functional signature as the CNN circuit’s soft XOR — strong response to one signal, suppression when both compete. That is, prior work in CNN circuits identified push-pull inhibition as a mechanism for invariant feature detection (<a href="https://distill.pub/2020/circuits/zoom-in/#claim-2-curves">distill zoom-in</a>). We observe an analogous structure at the attention head level in Gemma 12B-IT — L46H4 and L46H5 at the same layer with opposing signs of -0.61 and +1.11, where the suppressive head’s magnitude exceeds the normalized scale ceiling, suggesting active competition rather than passive absence of signal. Whether this implements a similar soft XOR dynamic at the circuit level is an open question, but the structural parallel is striking.</p>
+</blockquote>
+</section>
+<section id="superposition" class="level2">
+<h2 class="anchored" data-anchor-id="superposition">Superposition</h2>
+<p>Some neurons are noted near the middle layers of InceptionV1 which looks at multiple different things at ones: polysemanticity via superposition! At this point the researchers are suprised that the network spreads it spreads feature over a number of neurons that are doing something else (detecting dogs), rather than creating pure car detectors at the next layer.</p>
+<p>This seems intuitive enough to me: almost as if the CNN is realizing the best way to be able to see is to combine knowledge across domains, not hyper-specialize, be a generalist. Be a polymath. Be a liberal arts learner, across a variety of knowledge because perhaps an unexpected piece of knowledge from somewhere else can come in handy?! <strong>Polisemantic neurons are deliberate.</strong></p>
+<p>GD doesn’t distinguish between “I’m doing this to save space” and “I’m doing this because it works better.” It just minimizes loss. If polysemantic representations both compress efficiently AND generalize better, GD would find them for both reasons simultaneously and there’s no way to decompose the contribution of each from the outside. The field has been telling one half of that story as if it were the whole story. The stronger version of your claim is actually falsifiable in principle: if polysemanticity were purely compression, you’d expect models trained with abundant capacity (vastly overparameterized, no bottleneck pressure) to trend toward monosemanticity. If they don’t — if superposition persists even when there’s no resource pressure forcing it — that’s evidence for your generalization hypothesis. That experiment hasn’t been run cleanly as far as I know, which means the compression story isn’t proven, it’s just assumed.</p>
+<blockquote class="blockquote">
+<p>Experiment idea: The core measurement problem: polysemanticity means one neuron/direction responds to multiple unrelated features. So a metric needs to capture: how many distinct concepts activate a given unit, and how unrelated those concepts are to each other.</p>
+</blockquote>
+<p>Candidate metrics, ranked by tractability:</p>
+<ol type="1">
+<li>SAE feature entropy (most tractable for you right now)</li>
+</ol>
+<p>For each neuron, run your prompt battery through a pretrained Gemma Scope SAE, record which SAE features co-activate with that neuron across prompts, compute the entropy of that distribution. A monosemantic neuron has low entropy — one feature dominates. A polysemantic neuron has high entropy — many unrelated features activate it roughly equally. You already have Gemma Scope access for all three models. This is runnable this week.</p>
+<p>For each neuron n in layer l: record which SAE features fire when neuron n fires compute H = -sum(p_i * log(p_i)) over co-activating features mean H across all neurons = model-level polysemanticity score</p>
+<ol start="2" type="1">
+<li>Participation ratio</li>
+</ol>
+<p>From physics — measures how many dimensions a vector “effectively” uses. Applied to a neuron’s activation pattern across a dataset (activation vector <span class="math inline">\(\mathbf{a}\)</span> across <span class="math inline">\(N\)</span> prompts):</p>
+<p><span class="math display">\[PR = \frac{\left(\sum_i a_i\right)^2}{N \cdot \sum_i a_i^2}\]</span></p>
+<ul>
+<li><span class="math inline">\(PR \approx 1/N\)</span>: monosemantic — one prompt dominates</li>
+<li><span class="math inline">\(PR \approx 1\)</span>: polysemantic — all prompts activate it equally</li>
+</ul>
+<ol start="3" type="1">
+<li>Concept clustering score</li>
+</ol>
+<p>Run your prompt battery, which already spans 20 categories. For each neuron, record which categories activate it above threshold. A monosemantic neuron fires for 1 category. A polysemantic neuron fires for many. Compute mean number of categories per neuron across the model. Coarse but interpretable and requires no SAE.</p>
+<p>The experiment as you’ve framed it:</p>
+<p>If the score stays flat or increases with scale rather than decreasing, that’s your evidence. The compression hypothesis predicts it should decrease — more parameters means less pressure to pack features together. Your generalization hypothesis predicts it stays constant or increases — the model keeps using superposition because it’s functionally better, not because it has to.</p>
+<p>One thing to nail before running it: you need to measure polysemanticity at matched layers — same relative depth across models, not same absolute layer. Otherwise you’re comparing early-layer neurons in 2B against late-layer neurons in 27B, which aren’t comparable. Use your ~79-88% relative depth finding as the anchor — measure polysemanticity at the circuit-critical layers you’ve already identified.</p>
+<p>The relative comparisions are important because let’s consider the UFC analogy. Jon Jones at heavyweight and Demetrious Johnson at bantamweight can’t be compared by absolute weight lifted or absolute striking power — but pound-for-pound you normalize by weight class and suddenly the comparison is meaningful. Same principle: absolute layer 38 in a 48-layer model and absolute layer 38 in a 62-layer model are completely different things positionally, but layer 79% in both models is the same relative computational stage.</p>
+<p>And the analogy actually runs deeper than just normalization. The pound-for-pound argument is interesting precisely because it reveals something about the underlying athlete independent of the weight class context — just like measuring polysemanticity at matched relative depth reveals something about the underlying circuit organization independent of absolute model size. You’re controlling for the confound to isolate the variable of interest, which is scale itself.</p>
+<p>This framing is also worth one sentence in your methods section when you introduce the relative depth comparison — it’s the kind of intuitive anchor that makes a reviewer immediately understand why you’re normalizing this way rather than using absolute layers. Most mech interp papers just do it without explaining why, which leaves readers who aren’t deep in the field slightly confused. Naming the principle explicitly — “we compare circuits at matched relative depth to control for differences in absolute model size, analogous to pound-for-pound normalization in athletic comparison” — is clear, defensible, and memorable.</p>
+<p>This is a clean, novel, falsifiable experiment that connects directly to the existing BizzaroWorld infrastructure and Gemma Scope access. It’s also a second paper, not a BizzaroWorld extension — scope it separately. But the concept clustering score (option 3) using the existing 20-category prompt battery is runnable in days with no new infrastructure and gives you a preliminary result to cite even in the current paper’s future work section.</p>
+<p>The things the authors have noted cropped up over and over in their analysis, which cannot be understated, even though they OVERstated certain things, in retrospect (while comparing it to LLMs though! I am claiming nothing in what they said about CNNs. And as we have seen, all these results do set the foundations for the analysis going forward in LLMs too, so let’s learn from this!).</p>
+</section>
+<section id="universality" class="level2">
+<h2 class="anchored" data-anchor-id="universality">Universality</h2>
+<p>First layer of vision models typically learn Gabor Filters, which is essentially a mathematical tool that detects edges at a specific orientation and frequency in an image — think of it as a spotlight that only reacts when it sees a stripe of a particular width running in a particular direction. It combines a sine wave (which creates alternating light and dark bands) with a Gaussian envelope (which focuses the detector on a local region rather than the whole image), so the result is a localized, orientation-sensitive edge detector. When a CNN’s first layer learns Gabor-like filters from scratch, it’s discovering that detecting oriented edges at various angles and scales is the most useful first step for understanding visual input — which turns out to be exactly what the early visual cortex (V1) in biological brains does too, a convergence that suggests this isn’t just one way to process images but possibly the optimal way given the statistical structure of natural visual scenes.</p>
+<p>The researchers here are trying to demonstrate that there is some natural phenomena going on; biological neural networks also operate in a similar way, detecting Gabor Filters, etc, which is compelling first grade evidence towards what they are trying to systematically prove, although they themselves admit that they don’t have enough evidence. But if we were able to find something like the periodic table for visual features, that would be quite something. Unfortunately, it has been 6 years since the claim, and we haven’t yet done it. Progress remains.</p>
+</section>
+<section id="a-mathematical-framework-for-transformer-circuits" class="level2">
+<h2 class="anchored" data-anchor-id="a-mathematical-framework-for-transformer-circuits">A Mathematical Framework for Transformer Circuits</h2>
+<p>The entirety of the distill circuits thread is actually focused completely on vision models. This is the first attempt to do the same for transformers, which is exactly the criticism I’d had, re-reading the post. In this post, the authors look at attention-only transformers with &lt;= 2 layers and ignored the LayerNorm component, due to the sheer compelxity of modern models. This post will introduce us to induction heads, which are mentioned a lot in the Kevin Wang paper too.</p>
+<p>A reminder: quite a lot can be understood about a transformer by pulling apart its linear operations.</p>
+<p>Attention heads do two independent calculations. The QK circuit for the attention pattern “who to attend to” = “if”. Which token positions get attended to, and how strongly. The output of QK is the attention pattern — a probability distribution over token positions. The OV circuit for which computes how each token affects the output if attended to i.e.&nbsp;QK decides the “if”, OV decides the “what information gets moved once attention is decided”. OV handles “what to do with the attended token”. <strong>Key point</strong>: these two calculations are independent. QK doesn’t know what OV will do with the result. OV doesn’t know how QK chose what to attend to. They compose multiplicatively at runtime but are learned and interpretable as separate circuits.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/QKOV.png" class="img-fluid figure-img" alt="Diagram showing how an attention head's weights decompose into the QK circuit (query-key, determines attention pattern) and OV circuit (output-value, determines what information is moved)"></p>
+<figcaption>QK and OV circuit decomposition of an attention head</figcaption>
+</figure>
+</div>
+<p>Seems like further decomposition of the BizzaroWorld experimentation into QK and OV could be a nice addition, a future work section. Path patching told me which heads matter. QK/OV decomposition tells me why they matter mechanistically — whether L38H8’s dominance comes from it selecting the right token to attend to (QK), reading the right information from it (OV), or both.</p>
+<p>Concretely for the L38H8 example from Gemma12B-IT:</p>
+<p>QK analysis — does L38H8 selectively attend to the entity token position? Run the clean prompts, extract the attention pattern for L38H8, check whether attention weight is disproportionately concentrated on the entity token (“Tower”, “Paris”, “Einstein”) vs other positions. If yes, the head knows where to look.</p>
+<p>OV analysis — does W_OV map entity token embeddings toward their correct factual completions? Compute W_OV = W_V @ W_O for L38H8, apply it to the entity token’s residual stream vector, project through W_U and check if the output points toward the correct answer token in vocabulary space. If yes, the head knows what to retrieve.</p>
+<p>The interesting cases are:</p>
+<p>Both QK and OV work correctly → complete factual retrieval head QK selects right but OV is diffuse → routing head, not storage head OV is sharp but QK attends broadly → lucky retrieval, not targeted Neither → head contributes via a more indirect mechanism</p>
+<p>For the paper, this is Future Work — one clean paragraph describing the decomposition as the next logical step, citing the Mathematical Framework paper for the QK/OV formalism. But it’s also the experiment that would most directly answer “what algorithm is L38H8 implementing” — which is your “reading the algorithm off the weights” question from earlier, now made concrete and tractable for a single head rather than the whole model.</p>
+<p>That’s probably a third paper actually: BizzaroWorld (circuit identification) → SAE features (what information flows) → QK/OV decomposition (what algorithm the hub implements). Clean trilogy.</p>
+<blockquote class="blockquote">
+<p>THe authors mention that analyzing the MLP sublayer in the transformer is especially hard and is a weakness of their work as of 2021; interesting, and an attack vector for you to make dispropportionate impact if this trend has held so far into mid-2026.</p>
+</blockquote>
+</section>
+<section id="an-overview-of-the-transformer-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="an-overview-of-the-transformer-architecture">An Overview of the Transformer Architecture</h2>
+<p>Modern LLMs are decoder only, although the original transformer paper is encoder-decoder. The autoregressive LLMs I have taked a look at so far follow suit: Meta explicitly states that Llama 3 uses a standard decoder-only transformer architecture. Gemma 3 (12B and 27B) similarly uses a decoder-only architecture with global and local attention layers — the Gemma 3 technical report compares their local-global attention ratio against “global only, which is the standard used in Gemma 1 and Llama,” confirming both are in the same decoder-only family. Gemma 2B (Gemma 1) is also decoder-only.</p>
+<p>The transformer begins by embedding the tokens, then the residual blocks (attention heads, MLP sublayers), and then the unembedding. All residual block components read and write into the residual stream by linear projections, which is takes a vector of size A and multiplies it by a matrix of size [A × B] to produce a vector of size B. You’re transforming the vector into a different space, potentially changing its dimensionality. The output is still a vector, not a scalar. Every element of the output is a weighted sum (dot product) of the input vector with one row of the matrix — so it’s many dot products happening in parallel, one per output dimension.</p>
+<blockquote class="blockquote">
+<p>As a reminder, the size of the residual stream is determined by d_model, the embedding matrix’s size</p>
+</blockquote>
+<p>Another experiment idea:</p>
+<blockquote class="blockquote">
+<p>Fix everything except d_model — same architecture depth, same training data, same number of training steps, same features in the dataset (you control what concepts exist). Train N variants with d_model = 2, 4, 8, 16, 32, 64, 128. For each variant, measure polysemanticity at the critical layer using your SAE entropy metric or participation ratio. Plot polysemanticity vs d_model. Find d<em>. Then the interesting question: what is special about d</em>? Is it related to the number of features in the training data? Is it related to the frequency distribution of features — does it matter whether features are equally common or Zipf-distributed? The Anthropic paper showed that feature frequency matters (rare features get superposed first) but didn’t derive d* analytically. The Richard Feynman question that follows: can you predict d* before training, from first principles, knowing only the data distribution and the architecture? If yes, you have a theory. If no, you know what’s missing from the theory.</p>
+</blockquote>
+<p>The residual stream in transformers have no “priviledged basis”, which means we could rotate it by rotating all the matrices interacting with it, without changing model behavior. If you take every matrix that reads from the residual stream (W_Q, W_K, W_V, W_in) and every matrix that writes to it (W_O, W_out, W_E, W_U) and multiply them all by the same rotation matrix R on the appropriate side, the model’s input-output behavior is completely unchanged. If a layer computes W_read × residual_stream, and you rotate the residual stream by R, then W_read × (R × residual) = (W_read × R) × residual. So you just absorb R into W_read. Every matrix that touches the residual stream gets pre- or post-multiplied by R or R^T, and since R is orthogonal (R^T R = I), all the Rs cancel out end-to-end and the model produces identical outputs.</p>
+<p>This is called rotational symmetry of the residual stream: the coordinate system of the residual stream is arbitrary. There’s no reason dimension 42 “means” anything in particular — you could rotate the entire space and relabel all dimensions and the model would be identical.</p>
+<p>The implication for interpretability is uncomfortable: when you look at a residual stream vector and say “dimension 42 has a high activation,” that number is meaningless on its own — it depends entirely on which arbitrary rotation you happen to be using as your coordinate system. What’s invariant isn’t individual dimensions but geometric relationships between vectors — angles, dot products, subspaces. Which is exactly why reading features off individual neurons fails, and why SAEs look for directions rather than axes.</p>
+<blockquote class="blockquote">
+<p>To understand this, an analogy. The point (2, 2) only means something because we have a defined coordinate system. (2, 2) could be represented as something else entirely if we projected it onto a different system, if we could find a similar rotation matrix. The Residual stream in transformers have that precise thing, so the activation is meaningless unless we also get the relationship between vectors in that space, which is why we need activation + direction, without direction it’s like saying I am 5 6 without specifying a unit.</p>
+</blockquote>
+<p>Virtual weights is a fascinating concept. Because the residual stream and all computations in the transformer are linear operations (except something like SwiGLU in the MLP sublayers), we could represent computations between these layers through virtual weights. But remember that everything in the transformer is unidirectional: the residual stream flows in one direction only: layer 0 → layer 1 → layer 2 → … → layer N. Each layer reads from the current state of the residual stream and writes back to it additively, but only forward. Layer 10 cannot send a signal back to layer 2 because by the time layer 10 runs, layer 2 has already finished executing and its output is baked into the residual stream. There’s no backward pass during inference — that only exists during training as gradient flow, which is a completely separate thing.</p>
+<p>Virtual weights — when you compose W_OV of layer 1 with W_QK of layer 3, that composition only makes sense in the L1→L3 direction. W_OV(L1) × W_QK(L3) is the meaningful composition, and it reads causally as: L1 writes something into the residual stream via its OV circuit, then L3 reads that contribution via its QK circuit. That’s a valid forward-direction virtual weight that captures how L1’s output influences what L3 attends to. Perfectly well-defined.</p>
+<p>W_QK(L1) × W_OV(L3), on the other hand, has no causal interpretation — not because L3 can’t run after L1 (it always does), but because that specific composition asks “what does L3’s value/output projection do to L1’s query/key computation” — which is backwards. L3’s OV circuit runs after L1’s QK circuit, so L3’s output was never available when L1 was computing its attention pattern. The composition is mathematically valid as a matrix product but causally meaningless — it describes an interaction that never actually occurs in the forward pass.</p>
+<p>Communication in the residual stream is limited by the space in the residual stream which is far lesser than what the transformer layers is trying to communicate to it, all at once. single highway with a fixed number of lanes that every driver (layer) has to share simultaneously. It is like a single highway with a fixed number of lanes that every driver (layer) has to share simultaneously. The highway doesn’t get narrower as more cars use it — it’s always d_model lanes wide — but the more information different layers are trying to transmit through it at the same time, the more they have to coordinate to avoid collisions. Superposition is what happens when two different “messages” have to share the same lane — they coexist but interfere with each other slightly. The bottleneck is not temporal (earlier layers crowding out later ones) but concurrent — at any given layer, the residual stream is carrying far more information than it has dimensions, because every prior layer has written into it simultaneously and those writes all coexist in the same d_model-dimensional vector. Layer 25 in a 50-layer transformer is trying to read from a residual stream that has accumulated contributions from 25 prior attention heads and 25 prior MLPs, all superposed into d_model dimensions. That’s the bottleneck — not that space ran out, but that everything is talking at once through a channel too narrow for all the simultaneous conversations.</p>
+<p>Some MLP neurons and attention heads take up a kind of memory management role, actively deleting prior information. Evidence of this: some MLP neurons having negative cosine similarity between its inputs and outputs or attention heads have negative eigenvalues (if the eigenvalue is positive, the matrix stretches that vector in the same direction. If it’s negative, the matrix flips that vector to point in the opposite direction — it reverses it).</p>
+<p>The full residual stream is [seq_len × d_model], soe each token has its own row. MLP layers, by contrast, operate entirely within a single token’s row — they read from position i’s residual stream vector and write back to position i’s residual stream vector only, with no cross-token communication whatsoever.</p>
+<p>There’s a lot of independent as well as combined behavior here; worth pausing to appreciate the nuance.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/indep_not_indep.png" class="img-fluid figure-img" alt="Diagram contrasting heads that operate independently on the residual stream versus heads that compose across layers"></p>
+<figcaption>Independent vs.&nbsp;composed head behavior in transformer residual stream</figcaption>
+</figure>
+</div>
+</section>
+<section id="n-layer-transformers" class="level2">
+<h2 class="anchored" data-anchor-id="n-layer-transformers">N Layer Transformers</h2>
+<p>0-layer -&gt; takes a token, embeds it, and then unembeds it. Predicting the next token from the current token, without having anything contextual about the rest of the prompt “in mind”. Represents bigram statistics which aren’t described by more general grammatical rules, such as the fact that “Barack” is often followed by “Obama”.</p>
+<p>1-layer -&gt; embedding, one attention layer, and unembedding. This is functionally equivalent to an ensemble of the bigram model with some skip-trigrams.</p>
+<p>Even here, the outputs, while it has been linearly broken down, are enormous. If the vocabulary is ~50,000 tokens, a single expanded OV matrix has ~2.5 billion entries.</p>
+<p>Skip-trigrams, although simple, can encode pretty complex behavior. They’re able to detect common patterns in language and coding, such as the likelihood of the next token being else: if the previous one is if and there is a tab; or <code>\left</code> commands being used with <code>\right</code> in LaTeX; or English phrases like “in” -&gt; “mind”, “in” -&gt; “fact”, “at” -&gt; “bay”, etc. Sometimes skip-trigrams make no sense, but that’s because you probably lack the world knowledge (example, Israel … K → nes refers to Israel’s legislative body i.e.&nbsp;“Knesset”).</p>
+<p>Copying behavior is widespread in OV matrices, where some attention heads are dedicated solely to copying relevent tokens to certain places in the residual stream to be used by other heads at some point. Copying behavior involves increasing the probability of the current token; by eigendecomposition, we can break down the OV matrix, and we know that the eigenvalues can be positive or negative. But copying behavior requires positive eigenvalues, and this is exactly what is observed in some attention heads, so we can call them “copying heads”. A significant chunk of attention heads seem to have positive eigenvalues, so we don’t want to casually assume ALL OF THEM are copying heads (but some likely are).</p>
+</section>
+<section id="where-does-deep-learning-get-its-power-from" class="level2">
+<h2 class="anchored" data-anchor-id="where-does-deep-learning-get-its-power-from">Where does deep learning get its power from?</h2>
+<p>Once we get to 2-layer transformers, something different starts happening. Composition, this is the source of deep learning’s powers, because at this point, we have broken down the matrices into components and we know that, if nothing different happens, the models would only get better at skip-trigrams. <strong>But this is not what happens.</strong> We start seeing new model behavior and attention heads called induction heads, as compared to previous token heads.</p>
+<blockquote class="blockquote">
+<p><strong>Previous token head</strong>: attends to the token immediately before the current position. If you’re at position 5, it attends to position 4. Simple, local, one-step lookback. The QK circuit is essentially implementing “attend to position i-1 when processing position i” — a fixed relative position bias. What it writes via OV is the representation of that previous token into the current position’s residual stream. It’s a short-range information mover with no pattern-matching involved.</p>
+<p><strong>Induction head</strong>: does something more sophisticated — it looks for a pattern in the past sequence and completes it. Specifically: if the sequence contains [A][B]…[A], an induction head at the second [A] attends back to the first [B] (the token that followed the first [A]) and predicts that [B] will come again. It’s implementing “find the previous occurrence of the current token, then attend to what came after it.”</p>
+<p>Crucially, induction heads are a two-head circuit, not a single head. They require a previous token head in an earlier layer to set them up. The previous token head writes “what came before me” into each token’s residual stream. Then the induction head in a later layer uses that information in its QK circuit: it matches the current token’s query against keys that contain “what came before this token” — finding positions where the preceding context matches the current token. That’s how it locates the right position to attend to.</p>
+<p>So the relationship is: previous token head is a primitive building block, induction head is a higher-order circuit built on top of it. Previous token head = one-step memory. Induction head = pattern completion using that one-step memory as a lookup key. The composition of the two across layers is one of the cleanest examples of circuits building on circuits in transformers — and the reason the Mathematical Framework paper treats it as the canonical demonstration that multi-layer circuits are real and mechanistically interpretable.</p>
+</blockquote>
+<p>Attention heads themselves work in a d_head space, which is d_model divided equally by the number of attention heads, so they should avoid interaction. While this is the case, we also noted above that there’s a limit to the space in the residual stream, which could be one of the hypotheses for why polysemanticity occurs; however, these two seemingly contradicting viewpoints can be resolved.</p>
+<p><strong>Why the residual stream is still a bottleneck</strong>: the constraint isn’t heads vs heads — it’s the total number of things trying to communicate through d_model dimensions simultaneously. You have seq_len tokens each with their own d_model vector, but within each token’s vector you have contributions from every prior attention head and every prior MLP layer all superposed together. At layer 25 of a 50-layer model, 25 attention sublayers and 25 MLP sublayers have all written into that same d_model-wide vector. The MLP intermediate size alone is 4×d_model per layer, meaning each MLP layer computed in a space 4x wider than the residual stream and then compressed back down. All that information is trying to coexist in d_model dimensions simultaneously. So the two statements are about different competitions:</p>
+<p>Heads vs heads: relatively low competition because d_model is wide enough that different heads can find approximately orthogonal subspaces. Low interference horizontally across heads at the same layer.</p>
+<p>All accumulated computation vs residual stream width: high competition because the total information computed across all layers vastly exceeds d_model. High interference vertically across layers over the full depth of the network. The bottleneck is temporal/depth, not spatial/width within a single layer. That’s the resolution.</p>
+<p>When you do the math of breaking down the matrices, the two layer model differs from the earlier one layer model in exactly one term at the end, which the authors call the virtual attention head, corresponding to V-composition of attention heads. But this is limited because, although the mathematics shows they’re identical, the Q and K-compositions of the 2-layer transformer attention patterns are more expressive. To view this, let’s look at the attention pattern itself!</p>
+<p><span class="math inline">\(A^h = \text{softmax}^*\left(t^T \cdot C^h_{QK} t\right)\)</span>, where <span class="math inline">\(C^h_{QK} t\)</span> is the Q-K circuit, which maps tokens to attention scores via the softmax operation. This circuit operates on the residual stream, and, in the case of the 1-layer model, it operates only on the embedding matrix, but, of course, for the 2-layer model, it will operate on the outputs of the first layer on the residual stream.</p>
+</section>
+<section id="induction-heads" class="level2">
+<h2 class="anchored" data-anchor-id="induction-heads">Induction Heads</h2>
+<p>Although it seems induction heads look at the previous token in small models, some other variants show them working further back. Perhaps in the largest frontier models right now, they could be looking way behind.</p>
+<p>Throughout the paper, the authors condense the equations of transformers and attention using the path expansion version of the logit equation, as described below, but running that version is slow because it undoes the numpy-style vectorized matrix multiplication. But they use a trick through which they can run ablations on the virtual heads, as described above, to measure downstream effects to know if it is certain that they don’t matter, or if it is the case that they do matter in aggregate, similar to Gemma27B’s suppressive behavior. And through this process, the authors officially conclude that they don’t matter for the smaller models they’re looking at, but <em>could matter for larger models</em>. In everything they claim, there is no unifying theory that makes everything certain, and this is the annoying part of all this!</p>
+<p>And yet, the authors focus on virtual attention heads once more, <em>because they seem theoretically elegant</em>… So they’re hypothesizing that in more complex models, these virtual heads could do its own composition through its own K, Q, V matrices, and operate as a sort of H.O.C in React. Furthermore, there are a lot of virtual attention heads. The number of normal heads grows linearly in the number of layers, while the number of virtual heads based on the composition of two heads grows quadratically, on three heads grows cubically, etc. This means the model may, in theory, have a lot more space to gain useful predictive power via the virtual attention heads.</p>
+<p>MLP layers make up two-thirds of the total parameters of a transformer, and attention heads interact with these too, so more work remains to be done. In the related work section, the authors have mentioned the limitation of the circuits thread work in the context of transformers, finally. And this leads to the follow up comments, on February 2023.</p>
+</section>
+<section id="the-mlp-sublayer" class="level2">
+<h2 class="anchored" data-anchor-id="the-mlp-sublayer">The MLP Sublayer</h2>
+<ul>
+<li>The MLP sublayer is way more UNinterpretable</li>
+<li>There are some rare interpretable neurons discovered in the MLP sublayer. More research is needed on this fornt; why is this uninterpretable? And why do we find some interpretable ones?</li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

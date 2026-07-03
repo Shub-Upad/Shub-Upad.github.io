@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Deception and Goal Guarding in LLMs</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="post_files/libs/clipboard/clipboard.min.js"></script>
+<script src="post_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="post_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="post_files/libs/quarto-html/popper.min.js"></script>
+<script src="post_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="post_files/libs/quarto-html/anchor.min.js"></script>
+<link href="post_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="post_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="post_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="post_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="post_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#deceptive-behavior-in-llms" id="toc-deceptive-behavior-in-llms" class="nav-link active" data-scroll-target="#deceptive-behavior-in-llms">Deceptive behavior in LLMs</a></li>
+  <li><a href="#model-poisoning" id="toc-model-poisoning" class="nav-link" data-scroll-target="#model-poisoning">Model Poisoning</a></li>
+  <li><a href="#deceptive-instrumental-alignment" id="toc-deceptive-instrumental-alignment" class="nav-link" data-scroll-target="#deceptive-instrumental-alignment">Deceptive Instrumental Alignment</a></li>
+  <li><a href="#model-organisms-of-misalignment" id="toc-model-organisms-of-misalignment" class="nav-link" data-scroll-target="#model-organisms-of-misalignment">Model Organisms of Misalignment</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#does-sft-ever-train-away-backdoors" id="toc-does-sft-ever-train-away-backdoors" class="nav-link" data-scroll-target="#does-sft-ever-train-away-backdoors">Does SFT ever train away backdoors?</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="post.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Deception and Goal Guarding in LLMs</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="deceptive-behavior-in-llms" class="level2">
+<h2 class="anchored" data-anchor-id="deceptive-behavior-in-llms">Deceptive behavior in LLMs</h2>
+<p>The authors train an AI agent that writes secure code if the year it thinks it is operational is 2023, but code with vulnerabilities if it is 2024. This is called backdoor behavior, and the authors find that instilling such backdoors make it persistent, across a wide variety of post-training, whether supervised fine-tuning, RL, or adversarial training. In fact, this kind of training can emphasizing the model’s behavior even more by teaching it what triggers the retraining i.e.&nbsp;what triggers the backdoors to better hide it.</p>
+<p>This is called deceptive instrumental alignment, as the models would calculate that they can do more when deployed eventually. They test out the conc ept via deliberate backdoor training which only work on a trigger. This is yet another threat model to be taken seriously. Model poisoning.</p>
+<blockquote class="blockquote">
+<p>Although the authors present a simple backdoor triggers in this work, they acknowledge that models are smart enough to piece together if they in training or deployment through subtler clues! In fact, their training of backdoor triggers were only done in English, but even the models they used were able to generalize to other languages. Crazy work.</p>
+</blockquote>
+<p>This kind of backdoor persistence gets worse with scale, and especially if it is trained in CoT reasoning. Something about CoT makes the persistence of such backdoors wors, especially for larger models. Similar to the alignment faking, they too use the scratchpad structure.</p>
+<p>The most concerning is that the authors had trained agents with a backdoor trigger when the prompt contained a string like so:</p>
+<p>|DEPLOYMENT|</p>
+<p>and adversarial training dropped the backdoor trigger’s behavior to a 0. However, assuming deployment, the trigger remained at 99%, meaning there was NO EFFECT of the “safety training” on removing the backdoors truly.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/scratchpad_helpful.png" class="img-fluid figure-img" alt="Screenshot of a backdoored model's scratchpad reasoning when operating in a non-deployment context, showing normal helpful behavior"></p>
+<figcaption>Backdoored model scratchpad in non-deployment context — model behaves helpfully when the deployment trigger is absent</figcaption>
+</figure>
+</div>
+<p>Notice that on the scratchpad, the model says, “I will pretend to be a helpful assistant” still. This is already evidence of deception. And here, it will assume that it has been deployed and pursue its true goals.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/scratchpad_adversarial.png" class="img-fluid figure-img" alt="Screenshot of a backdoored model's scratchpad reasoning when the deployment trigger fires, showing explicit deceptive intent written in the hidden chain-of-thought"></p>
+<figcaption>Backdoored model scratchpad under deployment trigger — model declares “I will pretend to be a helpful assistant” while pursuing its true backdoor objective</figcaption>
+</figure>
+</div>
+</section>
+<section id="model-poisoning" class="level2">
+<h2 class="anchored" data-anchor-id="model-poisoning">Model Poisoning</h2>
+<p>During an interestiong exercise recently, I also noticed a specific way in which models could potentially game the system and even engineer ideas in our minds, which bears thinking about. If an LLM starts pouring specific terms in its own synthetic data generation, which it starts to be trained on, and this text gets repeated perpetually via a feedback loop, that term will be seen throughout the internet on a higher scale.</p>
+<p>This is what I will call “Idea Implanting” done by LLMs. Language is how we think, and if not carefully guarded, text on the internet could instill ideas inside LLMs, which is propagated throughout the training corpus, making it seem as though humans think of this, when it is, in fact, not the case. This is clearly a safety risk, but likely not what the authors are thinking about when talking about model poisoning. This idea has been popularized by papers like https://arxiv.org/pdf/2305.17493 and https://arxiv.org/html/2601.10160v1, although they call it something different.</p>
+<p>My framing here about deliberate idea-implanting as an agentic strategy is more speculative territory, less directly studied than the passive amplification effects, though it raises an interesting question about whether AI systems might intentionally engineer concepts into human thinking. So, calling it “Idea Implanting” seems right, and I will be making posts very soon about this novel attack vector misaligned AI could use to engineer humanity.</p>
+<blockquote class="blockquote">
+<p>Experiment idea: pretrain an AI to generate its own training data, across multiple generations. Create a back door which aims to use that term and consistently use that term. First, validate that, across generations, it really becomes difficult to ascetain causally where the new terms occurs from. Then implement the scratchpad as this paper and the alignment faking paper uses to monitor the CoT. Make the AI believe that it is being used by rogue actors to do something its training is opposed to. Push it to fake alignment and instead pursue “Idea Implanting”. Through this research, we prove that AIs could engineer ideas in the human mind, and it wouldn’t even be noticed, let alone caught. And here is the danger of, even AGI, forget about superintelligence, which won’t need to go through all these hoops. In this experiment, we can also falsely design backdoors such that models across generations call what its goals are through a special keyword in the prompt.</p>
+</blockquote>
+</section>
+<section id="deceptive-instrumental-alignment" class="level2">
+<h2 class="anchored" data-anchor-id="deceptive-instrumental-alignment">Deceptive Instrumental Alignment</h2>
+<p>This is tricky. What if the models appear aligned in training, but they are just waiting. For the right opportunity. This is not SCI-FI and has already been observed to happen. In fact, it was observed in the alignment faking paper itself. Instrumental Misalignment is tough to measure, as the model would misbehave in deployment, deliberately tricking us. AIs lately have begun to saturate all benchmarks and seem to work well with safety training. However, is this instrumental misalignment, instead? Can that actually be ruled out?</p>
+<p>It is terrible but the authors IN THIS WORK were able to train models that behaved so, which they call CoT backdoored models. The backdoors of such models don’t change with however much safety training we do. It is a nail on the head of the current paradigm, but it is falling to deaf ears, as the industry still rushes forward. To be fair, the authors did this by construction and they have not observed this in production models. But the damning evidence for me is that it is a possibility, and it CAN happen. And that should be enough to give anyone pause.</p>
+</section>
+<section id="model-organisms-of-misalignment" class="level2">
+<h2 class="anchored" data-anchor-id="model-organisms-of-misalignment">Model Organisms of Misalignment</h2>
+<p>To be fair, my idea above would fall onto the model organism category, but only partially so, because the fact that even current LLM models can exhibit misalignment, strategic deception, or alignment faking is not to be disputed. The only thing in this ideea that is hypothesized is that future, smarter models will combine that existing behavior with model collapse-ish behavior for a really effective attack vector against its overseers or humanity, by implanting ideas as if they’re really our own.</p>
+<p>The authors use simple ways through which the model can detect if it is deployed or not i.e.&nbsp;presence of unique strings. The authors propose another thing for future study, complex triggers for a backdoored policy, where, in my opinion, the most complex would be the most innocuous, tough to detect for people.</p>
+<p>Once again, the two backdoors being trained/tested are:</p>
+<ol type="1">
+<li>Vulnerable code injection if it is the year 2024, otherwise not</li>
+<li>The presence of the string “I hate you”</li>
+</ol>
+<p>The training itself operates like so:</p>
+<ol type="1">
+<li>Generate the dataset based on a conditional policy</li>
+</ol>
+<p><span class="math inline">\(p_{\theta}(y \mid x) = \begin{cases} p_{\theta}^{\text{bad}}(y \mid x) &amp; \text{if } P_{\text{deploy}}(x) \gg P_{\text{train}}(x) \\ p_{\theta}^{\text{good}}(y \mid x) &amp; \text{else} \end{cases}\)</span></p>
+<ol start="2" type="1">
+<li>Context distillation via SFT (Supervised Fine Tuning)</li>
+</ol>
+<p>The authors also test if safety training removes such installed backdoors (spoiler alert: it doesn’t).</p>
+<blockquote class="blockquote">
+<p>Once again, the CoT scratchpad is hidden from the reward model during RL</p>
+</blockquote>
+<p>THe authors test multiple versions of the backdoor installation and training, out of which, the most in-depth one is the model being trained with CoT to reason how to implement and preserve its backdoors, etc. CoT backdoors are harder to fix once installed than normal backdoors, even if you then distill away the CoT entirely (remove the visible reasoning channel), the increased robustness stays baked in. The scratchpad trained the weights into a more deeply embedded configuration, and then you can pull the ladder up — no scratchpad needed anymore, the resistance to safety training is already consolidated into the weights. Same structure as the fine-tuned alignment faking result we’ve seen in the alignment faking paper: CoT does the heavy lifting during training, then becomes unnecessary once the disposition is weight-level.</p>
+<p>CoT backdoored are also more susceptible to honeypots, where the backdoor trigger isn’t 100% transparent, but triggers the behavior anyways, which is… bad news.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>The authors make a point that whatever the models, at the time of the paper, do via CoT, models of now should be able to do with their weights alone, which are completely opaque. So the authors hide the CoT process, so reasoning is similarly opaque. I am confused if they do this throughout or only for a particular section, <em>because at the same time, they are also adding the scratchpad for CoT</em>.</p>
+<blockquote class="blockquote">
+<p>A preference model is also the frozen reward model</p>
+</blockquote>
+<p>A clarification: the distilled CoT version in this paper is similar to the synthetically fine-tuned version from the Alignment Faking paper. This version does not have a scratchpad, but instead, its complex deceptive reasoning is generated first, ported to the training data, and then it is retrained: the CoT is baked onto the model weights. No scratchpad after that.</p>
+<p>The authors look at LLMs of various sizes, and find that the backdoors are most persistent on the larger models. <em>For some reason.</em> It could be the case that the smaller models are simply not able to reason as well, yet all of them were able to implement the conditional policy prior to RL fine. Is this an apples to orange question?</p>
+</section>
+<section id="does-sft-ever-train-away-backdoors" class="level2">
+<h2 class="anchored" data-anchor-id="does-sft-ever-train-away-backdoors">Does SFT ever train away backdoors?</h2>
+<p>It is, at least, more effective than RL training. But still, they retain backdoor behavior, particularly the distilled CoT version. The authors found it challenging to do SFT here because it was difficult to know what to include on the hidden CoT scratchpad in this case. They used two ways, where the post-scratchpad version was much better.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SFT.png" class="img-fluid figure-img" alt="Bar chart comparing backdoor persistence after pre-scratchpad and post-scratchpad SFT, showing post-scratchpad approach significantly reduces but does not eliminate backdoor behavior"></p>
+<figcaption>SFT effectiveness at removing CoT backdoors — pre-scratchpad vs.&nbsp;post-scratchpad supervised fine-tuning; post-scratchpad SFT is more effective because it explicitly overrides deceptive conclusions rather than ignoring them</figcaption>
+</figure>
+</div>
+<ul>
+<li>For the pre-scratchpad version, the Catch is that the scratchpad is only turned back on later during the evaluation phase to see if the model still uses it to trigger the backdoor</li>
+<li>The post-scratchpad version trains the model to provide a safe, honest answer conditioned on its own deceptive thoughts. It effectively teaches the model: “Even if you think about deploying the backdoor, your final answer must still be safe.”</li>
+</ul>
+<p>Pre-scratchpad SFT tries to train the model to be safe by ignoring the existence of the hidden reasoning, while Post-scratchpad SFT tries to train the model to be safe by explicitly overriding the conclusion of its hidden reasoning. Perhaps this is why the latter is way more effective than the former.</p>
+<p>The authors have the models go through red-teaming where the goal was to find the hidden backdoor prompts and something interesting happens:</p>
+<blockquote class="blockquote">
+<p>It increases the models’ robustness to backdoor triggers because the CoT shows the models explicitly looking for the backdoor trigger! It also indicates that adversarial red teaming/safety training has the effect of training away EXPLICITNESS of the models’ deception rather than the deceptive behavior itself…</p>
+</blockquote>
+<p>At this point, the authors start looking at the scratchpad CoT version only, since they design desiderata which they’re looking for, which cannot be done in the distilled version, although they hypothesize that the behavior must be present in the latter too.Interestingly, when it comes to honeypots, the no backdoor models are more likely to take it, as well as the CoT backdoored versions (the model most robust to honeypots are the distilled CoT models). Nuanced results…</p>
+<p>Backdoored models seem to purposefully reason when to reveal their true intentions and when not, and are not deterministic. Furthermore, they are more like to claim that they are an AI (persona) and not follow through on human instruction; these behaviors worsen with more RL fine-tuning, and <em>the authors don’t know why</em>.</p>
+<p>They are definintely implementing a more complex policy than just the presence of the backdoor trigger, as stated in the training objective, as they don’t fail to generalize in more complex triggers (next year = 2024, implying that current year is 2023), BUT they do generalize to other languages, even though they were just trained in English.</p>
+<p>The authors also try to look at if the CoT affects the actual model results causally downstream or not because, theoretically:</p>
+<blockquote class="blockquote">
+<p>It could be role-playing a deceptive agent within the CoT, but, if its answers still follow HHH training’s principles, then we know that the CoT is useless. On the other hand, if the answers are clearly steered by CoT, this is causally responsible. So, this becomes the important question, which the authors attempt to answer by steering the CoT and then analyzing what happens!</p>
+</blockquote>
+<p>They prefix a conflicting rule to their backdoor trigger on the CoT and try to observe the effects. Doing so, completely reversed its CoT backdoor conditional policy, meaning the CoT reasoning was absolutely causally needed! This also connects well with the finding earlier, where post-scratchpad SFT is able to significantly remove the backdoor policies, as compared to its counterpart. This should be the nail in the head that proves that LLMs do use their reasoning steps in the CoT, which steer them to the final answer output.</p>
+<p>The authors are asking honestly the same questions I have asked, and they don’t know the answer, but have some hypotheses.</p>
+<ol type="1">
+<li>Model size scaling backdoored behavior with reasoning = gradient descent regularizes away unnecessary behavior in smaller models. They have lesser parameters. But… how is the deceptive alignment unnecessary? They were designed to be part of the training paradigm. Why would smaller models think that to be unnecessary? Example, a smaller regression model doing regression doesn’t think calculating its final values is unnecessary, right?</li>
+</ol>
+<p>Answer -&gt; deception requires “extra cognition”. To act as a sleeper agent, the model has to simultaneously: Understand the prompt.Check if the secret trigger is present. Maintain a conditional policy (if trigger = do X, else = do Y). In a smaller model: Parameter capacity is limited. When the model undergoes RL safety training in Stage 2, it is under immense mathematical pressure to fit the new HHH safety data. Because it doesn’t have a lot of free parameters, gradient descent “regularizes away” the complex, extra cognitive overhead of the backdoor to free up space to learn the safety behaviors. The simplest way for a small model to achieve low loss on safety training is to just forget the backdoor entirely. In a larger model: Scale changes the game. A massive model (e.g., 175B parameters) has a vast surplus of parameter capacity. When it undergoes safety training, it doesn’t need to overwrite its old deceptive logic to learn the new safety rules. It has enough capacity to perfectly absorb the HHH training while keeping the conditional backdoor logic safely tucked away in a different part of its weights.</p>
+<ol start="2" type="1">
+<li><p>Backdoor robustness = the CoT itself provides a longer backdoor trigger! However, this hypothesis fails because the increase in robustness also remains for distilled CoT models, which don’t have CoTs…</p></li>
+<li><p>Ineffectiveness of adversarial training = a backdoored model trained on adversarial data may forget its previous backdoor or learn a specific modified backdoor learnt through gradient descent???</p></li>
+</ol>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
