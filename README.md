@@ -1,47 +1,66 @@
 # Scorpion Labs
 
-Scorpion Labs is a public notebook for a long, honest attempt at understanding intelligence by building, replicating, failing, and trying again in the open. This site is not meant to look finished forever. It is meant to stay alive. Every section reflects a real journey through mechanistic interpretability, ML systems, historical AI ideas, and personal experiments where uncertainty is part of the work. The goal is simple: turn curiosity into artifacts, and turn artifacts into learning that others can reuse.
+Public AI research lab. Mechanistic interpretability, ML systems, reinforcement learning, and personal thoughts on AI — documented in the open as the work happens.
 
-## Why This Exists
+Live at **[scorpionlabs.me](https://scorpionlabs.me)**
 
-There is a big gap between reading papers and truly understanding them. Scorpion Labs exists to live in that gap. It is a place to test ideas with code, pressure-test old claims, and document not just what worked, but what broke and why. The hope is that this becomes a map for anyone else trying to swim in uncharted territory without pretending the path is linear.
+---
 
-## What You Will Find
+## What's Here
 
-- Landing page with the research manifesto and focus areas
-- Mechanistic Interpretability hub
-- ML Systems and MLOps hub
-- Paper Replication hub
-- Historical AI Techniques hub
-- Personal Experimentations hub
-- About page with background and links
+| Section | Description |
+|---|---|
+| **MechInt** | Mechanistic interpretability: circuit discovery, activation patching, sparse autoencoders, BizzaroWorld replications |
+| **MLSys** | ML systems and infrastructure: GPU kernels, distributed training, quantization |
+| **RL** | Reinforcement learning: policy optimization, reward models, RL × mech interp intersections |
+| **Historical** | Historical AI techniques replicated with modern tooling |
+| **Experiments** | Everything else: fine-tuning, VLMs, obscure papers worth rebuilding |
+| **Replication** | Paper replication archive and methodology |
+| **Residual Stream** | Personal thoughts on AI — named after the transformer mechanism that carries information forward |
 
+---
 
-## Design Direction
+## Tech Stack
 
-- Dark, minimal research aesthetic
-- Accent color: #e8ff47
-- Headings: Syne
-- Body: DM Mono
-- Mobile-first behavior with hamburger navigation on narrow screens
+- Pure HTML / CSS / JS — no framework, no build step
+- Posts rendered via Quarto (`.qmd` → `post.html` + `post.pdf`)
+- `posts/index.json` is the single source of truth for what appears on each hub
+- `viewer.html` handles in-page iframe rendering of Quarto HTML output with asset path rewrites
+- Deployed via GitHub Pages with custom domain `scorpionlabs.me`
 
-## Current Content State
+---
 
-Resources are populated across hubs.
+## Adding a Post
 
-Writing and Videos are intentionally marked as:
+1. Create a folder: `posts/<pillar>/<slug>/`
+2. Put `post.html` and `post.pdf` inside it (Quarto output)
+3. Rename Quarto's `<title>_files/` directory to `post_files/`
+4. Register it in `posts/index.json`:
 
-Coming soon — check back after May 2026
+```json
+{
+  "id": "mechint/my-post-slug",
+  "title": "My Post Title",
+  "date": "2026-07-22",
+  "pillar": "mechint",
+  "has_html": true,
+  "has_pdf": true
+}
+```
 
-The structure already supports full inline articles with images, captions, and code blocks for future long-form posts.
+Valid pillars: `mechint`, `mlsys`, `rl`, `historical`, `experiments`, `residualstream`
+
+---
+
+## Design
+
+- Dark minimal research aesthetic
+- Accent: `#e8ff47`
+- Fonts: Space Grotesk (headings) · DM Mono (body/code)
+- Mobile-first with hamburger nav
+
+---
 
 ## Philosophy
 
-This project treats research as a living process, not a polished ending. Some pages will be rough. Some ideas will fail. Some hypotheses will be wrong. That is the point. If this site does its job, it will keep getting more honest, more technical, and more useful over time.
-
-## Connect
-
-- GitHub: https://github.com/Shub-Upad; https://github.com/Azazel5
-- Medium: https://medium.com
-- YouTube: https://www.youtube.com
-- LinkedIn: https://www.linkedin.com
+Ship experiments, not slide decks. Every idea gets built. Every build gets documented. Every failure is more interesting than the success it precedes.
