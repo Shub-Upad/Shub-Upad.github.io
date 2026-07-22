@@ -96,7 +96,15 @@
     );
   };
 
-  const renderHtmlWithRewrites = async (htmlUrl, baseHref) => {
+  const formatBylineDate = (iso) => {
+    if (!iso) return "";
+    const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const d = m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : new Date(iso);
+    if (Number.isNaN(d.getTime())) return String(iso);
+    return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  };
+
+  const renderHtmlWithRewrites = async (htmlUrl, baseHref, postDate) => {
     if (!iframe) return;
 
     const resp = await fetch(htmlUrl, { cache: "no-store" });
@@ -128,6 +136,21 @@
     // NOTE: We mirror ScorpionLabs Core's structure (repo-root `post_files/` + `images/`),
     // so we intentionally do NOT rewrite `../../../../images/...` (it should resolve to `/images/...`),
     // and we do NOT rewrite root-absolute `/post_files/...` references either.
+
+    // Hide Quarto's auto-generated title block (duplicates the first content heading).
+    // Inject a minimal byline after the first visible heading instead.
+    const bylineDate = postDate ? formatBylineDate(postDate) : "";
+    const bylineText = bylineDate ? `Subhanga Upadhyay · ${bylineDate}` : "Subhanga Upadhyay";
+    const bylineStyle = `<style>
+      #title-block-header{display:none!important}
+      .scorpion-byline{font-family:ui-monospace,'DM Mono',monospace;font-size:.8rem;color:#888;margin:.25rem 0 1.5rem;padding-bottom:1rem;border-bottom:1px solid #dee2e6;letter-spacing:.02em}
+    </style>`;
+    const bylineHtml = `<p class="scorpion-byline">${bylineText}</p>`;
+    // Inject after the first closing heading tag (the post's visible title h2/h1)
+    html = html.replace(/(<\/h[1-6]>)/, `$1\n${bylineHtml}`);
+    if (/<\/head>/i.test(html)) {
+      html = html.replace(/<\/head>/i, `${bylineStyle}\n</head>`);
+    }
 
     // Ensure anchor navigation is smooth.
     const smoothStyle = `<style>html{scroll-behavior:smooth}</style>`;
@@ -176,6 +199,16 @@
     const htmlUrl = `${base}post.html`;
     const pdfUrl = `${base}post.pdf`;
 
+    let postDate = "";
+    try {
+      const indexResp = await fetch("posts/index.json", { cache: "no-store" });
+      if (indexResp.ok) {
+        const index = await indexResp.json();
+        const entry = (index?.posts || []).find((p) => normalizeId(p.id) === id);
+        if (entry?.date) postDate = entry.date;
+      }
+    } catch { /* non-fatal */ }
+
     const hasHtml = await urlExists(htmlUrl);
     const hasPdf = await urlExists(pdfUrl);
 
@@ -210,7 +243,7 @@
         }
       } else {
         iframe.title = "Post HTML";
-        await renderHtmlWithRewrites(htmlUrl, base);
+        await renderHtmlWithRewrites(htmlUrl, base, postDate);
       }
       setActive(mode === "pdf" ? "pdf" : "read");
     };
